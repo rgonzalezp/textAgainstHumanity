@@ -8,6 +8,7 @@ import { Template } from 'meteor/templating';
 
 import { Blaze } from 'meteor/blaze';
 
+
  
 
 export default class AccountsUIWrapper extends Component {
@@ -18,7 +19,7 @@ export default class AccountsUIWrapper extends Component {
 
     this.view = Blaze.render(Template.loginButtons,
 
-      ReactDOM.findDOMNode(this.container));
+      this.container);
 
   }
 

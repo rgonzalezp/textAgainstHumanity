@@ -51,6 +51,10 @@ class App extends Component {
 
   }
 
+  addRoom(){
+
+  }
+
   renderGameTooltip() {
     return this.props.currentUser ? <h3>Join your friends!</h3>:<h3>Log in to join the game</h3>;
   }
@@ -99,7 +103,7 @@ class App extends Component {
         </div>
       </Col>
       <Col xs="2">
-        <Button>Create!</Button>
+        <Button onClick={this.addRoom.bind(this)}>Create!</Button>
       </Col>
     </Row></div>:
       <h2>Join us to create your room!</h2>;
@@ -132,10 +136,10 @@ class App extends Component {
               <Container className="text-center"> 
                 {this.renderWelcome()}
                 {this.renderCreateGame()}
+                <AccountsUIWrapper/>
               </Container>
             </Col>
           </Row>
-          <AccountsUIWrapper/>
         </Container>
       </div>
       
