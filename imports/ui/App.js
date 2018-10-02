@@ -93,19 +93,22 @@ class App extends Component {
   }
 
   renderCreateGame(){
-    return this.props.currentUser ? <div><Row>
-      <label>Create a game:</label>
-    </Row>
-    <Row>
-      <Col xs="10">
-        <div className="form-group">
-          <input type="text" className="form-control" id="usr"/>
-        </div>
-      </Col>
-      <Col xs="2">
-        <Button onClick={this.addRoom.bind(this)}>Create!</Button>
-      </Col>
-    </Row></div>:
+    return this.props.currentUser ? 
+      <div>
+        <Row>
+          <label>Create a game:</label>
+        </Row>
+        <Row>
+          <Col xs="10">
+            <div className="form-group">
+              <input type="text" className="form-control" id="usr"/>
+            </div>
+          </Col>
+          <Col xs="2">
+            <Button onClick={this.addRoom.bind(this)}>Create!</Button>
+          </Col>
+        </Row>
+      </div>:
       <h2>Join us to create your room!</h2>;
 
   }
@@ -122,14 +125,16 @@ class App extends Component {
         <Container> 
           <Row>
             <Col xs="6">
-              <Container className="list-group list-group-flush">
+              <Container className="list-group">
                 <Container className="text-center"> 
                   {this.renderGameTooltip()}
                 </Container>
-                <li id="gamelist-tit"className="list-group-item">
-                CURRENT GAMES:
-                </li>
-                {this.renderTasks()}
+                <ul class="list-group">
+                  <li id="gamelist-tit"className="list-group-item">
+                  CURRENT GAMES:
+                  </li>
+                  {this.renderTasks()}
+                </ul>
               </Container>
             </Col>
             <Col xs="6">
