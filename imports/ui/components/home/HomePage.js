@@ -130,7 +130,7 @@ class HomePage extends Component {
                 <Container className="text-center"> 
                   {this.renderGameTooltip()}
                 </Container>
-                <ul class="list-group">
+                <ul className="list-group">
                   <li id="gamelist-tit"className="list-group-item">
                   CURRENT GAMES:
                   </li>

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { BrowserRouter } from 'react-router-dom';
+global.jQuery = require('jquery');
+require('bootstrap');
+import 'bootstrap/dist/css/bootstrap.css';
 
 
 import Game from './components/game/Game';
