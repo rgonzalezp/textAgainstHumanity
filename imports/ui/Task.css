@@ -1,3 +1,7 @@
 .list-group{
 	padding:1rem;
 }
+.labelDeck{
+	text-align: end;
+	color:black;
+}
