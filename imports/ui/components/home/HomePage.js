@@ -6,10 +6,11 @@ import Task from '../../Task.js';
 import {Cards} from '../../../api/cards.js'
 import { Meteor } from 'meteor/meteor';
 import AccountsUIWrapper from '../../AccountsUIWrapper.js';
-import {Alert , Container, Row, Col,Button, Label, Input } from 'reactstrap';
+import {  Container, Row, Col,Button, Label, Input } from 'reactstrap';
 import '../../App.css';
 import GameList from '../../GameList.js';
-
+import Game from '../game/Game.js'
+import { Route, Redirect , browserHistory} from 'react-router-dom';
 // App component - represents the whole app
 class HomePage extends Component {
 
@@ -25,7 +26,9 @@ class HomePage extends Component {
       expansion2: false,
       expansion3: false,
       hideCompleted: false,
-      cartas:[]
+      name_room:'',
+      cartas:[],
+      game_ready: false
 
     };
  
@@ -33,6 +36,7 @@ class HomePage extends Component {
     this.handleChangeExpansion1 = this.handleChangeExpansion1.bind(this);
     this.handleChangeExpansion2 = this.handleChangeExpansion2.bind(this);
     this.handleChangeExpansion3 = this.handleChangeExpansion3.bind(this);
+    this.handleNameRoomChange   = this.handleNameRoomChange.bind(this)
     this.addRoom = this.addRoom.bind(this);
     this.getCartas = this.getCartas.bind(this);
   }
@@ -88,10 +92,13 @@ handleChangeExpansion3 () {
     })
   }
 
+  handleNameRoomChange(e){
+    this.setState({name_room:e.target.value})
+  }
   addRoom(){
     //This is so nested functions can get this
     const aqui = this
-
+    const {history} =this.props
     //Base deck
     const base   = this.state.baseCards? 'Base': false;
     //Expansion deck 1 
@@ -99,28 +106,41 @@ handleChangeExpansion3 () {
     const expan2 = this.state.expansion2? 'CAHe2':false;
     const expan3 = this.state.expansion3? 'CAHe3':false;
     const lista = [base,expan1,expan2,expan3]
+    let id_game 
     //Checks that there is minimum one option selected
     if ((base ===false) && (expan1===false) &&(expan2===false)&& (expan3===false)){
      alert('Please choose one deck!');
     }
     else{
-      
-      console.log('lista: ',lista.filter(chk=> chk!==false))
-      // Queria asi  Meteor.call('Cards.get', lista.filter(chk=> chk!==false) 
-      const promise = this.getCartas(lista)
-      promise.then(function(ret){
-        console.log('rettete: ',ret)
-        console.log(aqui.state.cartas)
-      })
-     
-   
-    
+      const nombre = this.state.name_room
+      if(nombre==='')
+      {
+        alert('Please give your room a name!')
+      }
+      else{
+        Meteor.call('tasks.insert',nombre, [this.props.currentUser.username])
+        console.log('lista: ',lista.filter(chk=> chk!==false))
+        // Queria asi  Meteor.call('Cards.get', lista.filter(chk=> chk!==false) 
+        const promise = this.getCartas(lista)
+        promise.then(function(ret){
+          console.log('rettete: ',ret)
+          
+          console.log(aqui.state.cartas)
+          aqui.setState({game_ready:true})
+          
+        }).then(function(){
+  
+         history.push({
+          pathname: '/game',
+          state: { cartas_game: aqui.state.cartas, nombre:'test' }
+        })
+        
+        })
+      }
+
   }
 
    } 
-
-
-  
 
     renderGameTooltip() {
     return this.props.currentUser ? <h3>Join your friends!</h3>:<h3>Log in to join the game</h3>;
@@ -200,7 +220,7 @@ handleChangeExpansion3 () {
         <Row>
           <Col xs="10">
             <div className="form-group">
-              <input type="text" className="form-control" id="usr"/>
+              <input type="text" className="form-control" id="usr" onChange={this.handleNameRoomChange}/>
             </div>
           </Col>
           <Col xs="2">
@@ -213,11 +233,14 @@ handleChangeExpansion3 () {
 
   }
 
- 
+  redirect() {
+    this.props.history.push('/game')
+  }
 
   render() {
 
     return (
+      
       <div>
         <Container className="text-center"> 
           <h1>Text against humanity... Yes, exactly that.</h1>
@@ -246,6 +269,7 @@ handleChangeExpansion3 () {
             </Col>
           </Row>
         </Container>
+      
       </div>
       
     );

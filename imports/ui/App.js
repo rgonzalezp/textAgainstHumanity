@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter , Switch} from 'react-router-dom';
 global.jQuery = require('jquery');
 require('bootstrap');
 import 'bootstrap/dist/css/bootstrap.css';
@@ -18,10 +18,10 @@ class App extends Component {
       <div className="App">
         <main>
           <BrowserRouter>
+          <Switch>
             <Route path="/" exact component={HomePage} />
-          </BrowserRouter>
-          <BrowserRouter>
             <Route path="/game" exact component={Game} />
+            </Switch>
           </BrowserRouter>
         </main>
       </div>
