@@ -75,7 +75,9 @@ class Game extends Component {
       <div>
         <div className="panel panel-default cronometer center-block">
           <div className="panel-body">
-            <Timer/>
+            <Timer 
+            ref={(timer) => {this.timer = timer;}}
+            />
             {this.getBlackCardGame()}
             {this.submitCurrentGame()}
           </div>
