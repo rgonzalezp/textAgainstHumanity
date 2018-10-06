@@ -156,7 +156,8 @@ handleChangeExpansion3 () {
     if (this.state.hideCompleted) {
       filteredTasks = filteredTasks.filter(task => !task.checked);
     }
-
+    console.log('fefe')
+    console.log(filteredTasks)
     return filteredTasks.map((task) => {
       const currentUserId = this.props.currentUser && this.props.currentUser._id;
       const showPrivateButton = task.owner === currentUserId;
@@ -181,18 +182,23 @@ handleChangeExpansion3 () {
 
   renderCreateGame(){
     return this.props.currentUser ? 
-      <div>
-        <Row>
-          <label>Create a game:</label>
+    
+      <Container className='border'>
+
+        
+        <Row className='border'>
+          <Label className="">Create a game:</Label>
         </Row>
-        <Row>
+        <Row className='border'>
           <Col md="12">
           <Row>
             <Label className="labelDeck">Select your playing decks</Label>
           </Row>
           </Col>
-        <Col xs="3">  
+        </Row>
         <Row> 
+          <Col xs='3'>
+          <Row>
           <Col xs='4'><Label for="checkbox1">Base Cards</Label> </Col>  
           <Col xs='8'><Input type="checkbox" id="checkbox1" onChange={this.handleChangeBase}/></Col>
           </Row>
@@ -217,17 +223,17 @@ handleChangeExpansion3 () {
           </Col>
           
         </Row>
-        <Row>
+        <Row className='border'>
           <Col xs="10">
             <div className="form-group">
-              <input type="text" className="form-control" id="usr" onChange={this.handleNameRoomChange}/>
+              <Input type="text" className="form-control" id="usr" onChange={this.handleNameRoomChange}/>
             </div>
           </Col>
           <Col xs="2">
             <Button onClick={this.addRoom.bind(this)}>Create!</Button>
           </Col>
         </Row>
-      </div>:
+      </Container>:
         <h2>Join us to create your room!</h2>;
     
 

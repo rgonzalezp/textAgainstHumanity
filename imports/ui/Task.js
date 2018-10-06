@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { Tasks } from '../api/tasks.js';
 import { Meteor } from 'meteor/meteor';
 import classnames from 'classnames';
+
 import './Task.css';
 // Task component - represents a single todo item
 
@@ -46,7 +47,6 @@ export default class Task extends Component {
  
 
     return (
-
       <li className="list-group-item">
         { this.props.showPrivateButton ? (
 
@@ -59,11 +59,12 @@ export default class Task extends Component {
         ) : ''}
         <span className="text">
 
-          <strong>{this.props.task.username}</strong>: {this.props.task.text}
+          <strong>Host:</strong> {this.props.task.username}  || <strong>Game:</strong> {this.props.task.text}  || <strong>Players:</strong> {this.props.task.players?this.props.task.players.filter((pl)=>{pl===this.props.username}):''}
 
         </span>
 
       </li>
+
 
     );
 
