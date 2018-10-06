@@ -225,10 +225,11 @@ class HomePage extends Component {
           <Col xs="10">
             <div className="form-group">
               <Input type="text" className="form-control" id="usr" onChange={this.handleNameRoomChange}/>
+
             </div>
           </Col>
           <Col xs="2">
-            <Button onClick={this.addRoom.bind(this)}>Create!</Button>
+            <Button id="usrBtn" onClick={this.addRoom.bind(this)}>Create!</Button>
           </Col>
         </Row>
       </Container>:

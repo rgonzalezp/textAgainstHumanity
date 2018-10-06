@@ -86,7 +86,7 @@ class Timer extends Component {
 
   }
 
-  setGamePhase(){
+  setGamePhase() {
     this.setState({
       timerState:timerStates.VOTING,
       gamePhase: this.state.gamePhase-1
@@ -105,6 +105,12 @@ class Timer extends Component {
     this.setBaseTime(newBaseTime);
     
 
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(prevState.timerState !== this.state.timerState) {
+      this.props.checkGameState(this.state.gamePhase,this.state.timerState);
+    }
   }
 
   renderConfig() {

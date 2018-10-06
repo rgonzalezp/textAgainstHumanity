@@ -16,17 +16,18 @@ class Game extends Component {
       players:[{name:'test',inputs:{input1:'',input2:''}}]
     };
     this.handleChangeInput1 = this.handleChangeInput1.bind(this);
+    this.handleChangeInput2 = this.handleChangeInput1.bind(this);
+    this.checkGameState = this.checkGameState.bind(this);
+    
   }
 
 
   handleChangeInput1(evt){
-    console.log(`Input 1: ${evt.target.value}`)
-  
-
-
+    console.log(`Input 1: ${evt.target.value}`);
   }
+
   handleChangeInput2(evt){
-    console.log(`Input 2: ${evt.target.value}`)
+    console.log(`Input 2: ${evt.target.value}`);
   }
 
     updateCardState = () => {
@@ -61,8 +62,14 @@ class Game extends Component {
 
 
 
-  submitCurrentGame(){
+  submitCurrentGame() { 
 
+  }
+
+  checkGameState( gamePhase , gameState) {
+    //this method needs to change state in game component to re-render different componetns
+    console.log("currentRound", gamePhase);
+    console.log("currentGameState",gameState);
   }
 
   componentDidMount(){
@@ -77,7 +84,7 @@ class Game extends Component {
           <div className="panel-body">
             <Timer 
             ref={(timer) => {this.timer = timer;}}
-            />
+            checkGameState= {this.checkGameState}/>
             {this.getBlackCardGame()}
             {this.submitCurrentGame()}
           </div>
