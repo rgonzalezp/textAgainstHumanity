@@ -32,7 +32,7 @@ Meteor.methods({
 
     check(text, String);
 
-    console.log('players: ',players)
+    console.log('players: ',players);
     // Make sure the user is logged in before inserting a task
 
     if (! this.userId) {
@@ -41,7 +41,7 @@ Meteor.methods({
 
     }
 
-    console.log('what is this.userId: ', this.userId)
+    console.log('what is this.userId: ', this.userId);
     
 
     Tasks.insert({

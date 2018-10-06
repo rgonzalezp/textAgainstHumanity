@@ -29,7 +29,7 @@ class Game extends Component {
     console.log(`Input 2: ${evt.target.value}`)
   }
 
-    updateCardState = ()=>{
+    updateCardState = () => {
     this.setState({cards:this.props.location.state.cartas_game})
   }
 

@@ -46,6 +46,9 @@ https://optimizelocker.herokuapp.com
 ## Preview
 ![alt text](images/WebScreenshot.png "Preview of Optimize")
 
+## Cards
+
+to import cards use `mongoimport --host localhost:3001 --db meteor --collection Cartas --type json --file db/bd_cards.json --jsonArray`
 ## Copyright and license
-Code Copyright 2018 Ricardo Enrique Gonzalez Peñuela, Santiago Munera. Code released under the MIT license.
+Code Copyright 2018 Ricardo Enrique Gonzalez Peñuela, Esteban Galvis. Code released under the MIT license.
 
