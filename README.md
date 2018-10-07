@@ -34,7 +34,8 @@ Add link to demo
 - Make sure you first import the card decks (Some default decks in the /db folder) before you start playing
 
 ## Preview
-![alt text](images/WebScreenshot.png "Preview of Optimize")
+![alt text](preview/Homepage.png "Preview of Text against humanity homepage")
+![alt text](preview/Gameroom.png "Preview of Text against humanity game room")
 
 ## Cards
 - Decks provided by : https://crhallberg.com/cah/
