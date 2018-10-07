@@ -12,18 +12,24 @@ if (Meteor.isServer) {
   // This code only runs on the server
   // Only publish tasks that are public or belong to the current user
   Meteor.publish('tasks', function tasksPublication() {
-    return Tasks.find({
+  return Tasks.find({
 
-      $or: [
+    $or: [
 
-        { private: { $ne: true } },
+      { private: { $ne: true } },
 
-        { owner: this.userId },
+      { owner: this.userId },
 
-      ],
+    ],
 
-    });
   });
+});
+Meteor.publish('task', function tasksPublication(owr) {
+  console.log('Entro a publish task',owr)
+  return Tasks.findOne({
+    owner:owr
+  });
+});
 }
 
 Meteor.methods({
@@ -32,7 +38,7 @@ Meteor.methods({
 
     check(text, String);
 
-    console.log('players: ',players);
+    console.log('players: ',players)
     // Make sure the user is logged in before inserting a task
 
     if (! this.userId) {
@@ -41,17 +47,27 @@ Meteor.methods({
 
     }
 
-    console.log('what is this.userId: ', this.userId);
+    console.log('what is this.userId: ', this.userId)
     
+    const game = Tasks.findOne({
+      owner: this.userId
+  });
+  console.log('Game?: ',game)
+    if(!game)
+    {
 
-    Tasks.insert({
-      text: text,
-      createdAt: new Date(),
-      players: players,
-      owner: this.userId,
-      username: Meteor.users.findOne(this.userId).username,
+      console.log('Do you enter??: ')
+      
+      Tasks.insert({
+        text: text,
+        createdAt: new Date(),
+        players: players,
+        owner: this.userId,
+        username: Meteor.users.findOne(this.userId).username,
+  
+      });  
 
-    });
+    }
 
   },
 
@@ -91,7 +107,24 @@ Meteor.methods({
     check(setChecked, Boolean);
 
     Tasks.update(taskId, { $set: { checked: setChecked } });
+  }, 
+   'tasks.addPlayer'(taskId) {
+    const task = Tasks.findOne(taskId);
+    const current_user = Meteor.users.findOne(this.userId)
+    console.log('entra a addPlayers: ',task)
+    console.log('current user:  ',current_user)
+    if (task.owner !== this.userId && current_user) {
+      task.players.push(current_user.username)
+      console.log('task.players: ',task.players)
+      Tasks.update(taskId, { $set: { players: task.players } });
+    }
+    else{
+       if(typeof(current_user)==='undefined'){
+         alert('Please login or create account to play!')
+       }
+    }
   },
+
   'tasks.setPrivate'(taskId, setToPrivate) {
 
     check(taskId, String);

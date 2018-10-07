@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import './Game.css';
 import Timer from './Timer';
-import {  Container, Row, Col,Button, Label, Input } from 'reactstrap';
+import {  Container, Row, Col,Button, Label, Input, ListGroup, ListGroupItem } from 'reactstrap';
+import { Tasks } from '../../../api/tasks.js';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
 
 class Game extends Component {
   constructor(props) {
@@ -11,14 +14,19 @@ class Game extends Component {
 
 
     this.state = {
+      player:'',
+      task:{},
       cards:[],
-      turn:0,
-      players:[{name:'test',inputs:{input1:'',input2:''}}]
+      master:false,
+      turn:0
     };
     this.handleChangeInput1 = this.handleChangeInput1.bind(this);
     this.handleChangeInput2 = this.handleChangeInput1.bind(this);
     this.checkGameState = this.checkGameState.bind(this);
-    
+    this.updateCardState = this.updateCardState.bind(this)
+    this.updateTaskState = this.updateTaskState.bind(this);
+    this.updateCurrentPlayer =this.updateCurrentPlayer.bind(this)
+    this.updateMaster   = this.updateMaster.bind(this)
   }
 
 
@@ -33,34 +41,48 @@ class Game extends Component {
     updateCardState = () => {
     this.setState({cards:this.props.location.state.cartas_game})
   }
-
-  getBlackCardGame(){
-    console.log('Entra a black')
-    if(this.state.cards.length!==0)
-    {
-      //Aunque esto tiene que ser global de la bd
-      let card =  this.state.cards[Math.floor(Math.random()*this.state.cards.length)];
-    
-      let card_sub = card.text.split("_");
-      console.log(card_sub)
-      if(card_sub.length<=2){
-        return (    <Container>
-          <Label className="exampleBlackCard">{card.text}</Label>
-          <Input type="textarea" name="inp1" id="input_1" placeholder="Add your answer!" onChange={this.handleChangeInput1} />
-          </Container>)
+  updateTaskState = ()=>{
+    //  console.log('updatetask: ',this.props.location.state.current_game)
+      const   current_juego = this.props.location.state.current_game //Tasks.find({'owner':this.props.location.state.current_game[0]}).fetch();
+    //  console.log('currentGame: ',current_juego)
+      this.setState({task:current_juego[0]})
+     }
+     getBlackCardGame(){
+      if(this.state.cards.length!==0)
+      {
+        console.log('Entra a black')
+        console.log('Task?: ', this.state.task)
+        console.log('Player: ',this.state.player)
+        //Aunque esto tiene que ser global de la bd
+        let card =  this.state.cards[Math.floor(Math.random()*this.state.cards.length)];
+      
+        let card_sub = card.text.split("_");
+        console.log(card_sub)
+        if(card_sub.length<=2){
+          return (    <Container>
+            <Label className="exampleBlackCard">{card.text}</Label>
+            <Input type="textarea" name="inp1" id="input_1" placeholder="Add your answer!" onChange={this.handleChangeInput1} />
+            </Container>)
+        }
+        else{
+          return (    <Container>
+            <Label className="exampleBlackCard">{card.text} </Label>
+            <Input type="textarea" name="inp1" id="input_1" placeholder="Add your answer for 1st blank!" onChange={this.handleChangeInput1} />
+            <Input type="textarea" name="inp2" id="input_2" placeholder="Add your answer for 2nd blank!" onChange={this.handleChangeInput2}/>
+            </Container>)
+        }
       }
-      else{
-        return (    <Container>
-          <Label className="exampleBlackCard">{card.text} </Label>
-          <Input type="textarea" name="inp1" id="input_1" placeholder="Add your answer for 1st blank!" onChange={this.handleChangeInput1} />
-          <Input type="textarea" name="inp2" id="input_2" placeholder="Add your answer for 2nd blank!" onChange={this.handleChangeInput2}/>
-          </Container>)
-      }
+  
     }
+    updateMaster =()=>{
 
-  }
+      console.log('UPDATEMASTER: ', this.state.player)
+          this.setState({master: !this.state.master})
+      }
 
-
+      updateCurrentPlayer = (nam)=>{
+        this.setState({player:nam})
+      }
 
   submitCurrentGame() { 
 
@@ -73,9 +95,123 @@ class Game extends Component {
   }
 
   componentDidMount(){
+   // console.log('didMount: ',this.props.task)
     if(this.state.cards.length===0){
-      this.updateCardState();
+     // console.log('task: ',this.props.location.state.current_game)
+      const nPlyr   = this.props.location.state.jugador
+      //console.log('player: ',this.props.location.state.jugador)
+     // console.log('cards: ',this.props.location.state.cartas_game)
+     // this.setState({task:this.props.location.state.current_game[0]});
+      this.updateTaskState()
+      this.updateCurrentPlayer(nPlyr)
+      this.updateCardState()
     }
+    else{
+      console.log('comodidmount else')
+        if(this.state.cards.length)
+        {
+
+        }
+    }
+  }
+  renderMasterBoard(){
+    console.log('Rendermasterboard')
+    console.log(this.state.master)
+    console.log(this.state.task)
+    return (<Container>
+      {this.renderPlayers()}
+      <Row>
+        <Col sm='12'>
+        <Button outline color="success"  block>
+          Start
+        </Button>
+        </Col>
+      </Row>
+    </Container>)
+  }
+
+  renderSlaveBoard(){
+    console.log('comomomun')
+    //console.log(this.state.task)
+        if(typeof(this.state.task)==='undefined'){
+          console.log('task is undefined')
+        }
+        else{
+         // console.log(this.state.task)
+          return(this.state.task?this.renderPlayers():'Loading')
+        }
+  }
+
+  renderJugador(jugadores) {
+    console.log('render Jugador :',jugadores)
+     return  jugadores.map((jug,ind) => {
+    return <ListGroupItem key={ind}>{ jug}</ListGroupItem>
+     }
+      );
+  }
+
+  componentDidUpdate(){
+    console.log('begini ')
+    //console.log()
+   if(typeof(this.state.player)!=='undefined'&& typeof(this.state.task)!=='undefined')
+   {
+     //console.log(this.state.player)
+     //console.log('haaa')
+     //console.log(this.state.task)
+      if(this.state.player===this.state.task.username){
+       // console.log('iii')
+        if(this.state.master===false){
+         // console.log('eee')
+          this.updateMaster()
+        }
+        else{
+         // console.log('ur are masters')
+         // console.log(this.state.master)  
+          //console.log(this.state.task.players)
+          //console.log(this.props)
+
+          if(typeof(this.props.task[0])!=='undefined')
+          {
+            console.log('whyyes')
+            console.log(typeof(this.props.task[0].players))
+            console.log(this.state.task)
+            if(this.props.task[0].players!==this.state.task.players)
+            {
+              this.setState({task:this.props.task[0]})
+            }
+          }
+        }
+      }
+   }
+   else{
+     console.log('heeee')
+     console.log(this.state.task)
+   }
+  }
+
+  renderPlayers(){
+    console.log('RenderPlayers: ', this.state.task)
+    const {players} = this.state.task
+
+    if(typeof(players)==='undefined')
+    { 
+      return (<h2>Loading</h2>)
+    }
+    else{
+    return(    
+      <Container>
+     <Row>
+      <Col sm='12'>
+      <h1>Currently there are: {players.length}  players </h1>
+      </Col>
+    </Row>
+      <ListGroup>
+      {this.renderJugador(players)}
+      </ListGroup>
+      </Container>  
+
+ )
+}
   }
   render() {
     return (
@@ -85,8 +221,8 @@ class Game extends Component {
             <Timer 
             ref={(timer) => {this.timer = timer;}}
             checkGameState= {this.checkGameState}/>
-            {this.getBlackCardGame()}
-            {this.submitCurrentGame()}
+            {this.state.master?this.renderMasterBoard():this.renderSlaveBoard()}
+
           </div>
         </div>
       </div>
@@ -94,4 +230,34 @@ class Game extends Component {
   }
 }
 
-export default Game;
+export default withTracker((props) => {
+  Meteor.subscribe('tasks')
+  console.log('Wahtadapmotherfucker')
+
+  let dueno
+  //Estos ifs son para verificar formato nada mas de como entra el
+  //game (task)
+  //console.log((props))
+  if(typeof(props.location.state.current_game)==='object')
+  {
+    console.log('entro a primer if')
+    if(typeof(props.location.state.current_game.owner)==='undefined')
+    {
+      dueno =  props.location.state.current_game[0].owner
+    }
+    else{
+      console.log(props.location.state.current_game)
+
+      dueno = props.location.state.current_game.owner
+    }
+  }
+  else{
+    //console.log('entro a segundo if')
+    //console.log(props.location.state.current_game[0].owner)
+  }
+  const task_2 = Tasks.find({owner:dueno}).fetch()
+  //console.log('task_abajo: ',task_2)
+  return {
+    task: task_2
+  };
+})(Game);

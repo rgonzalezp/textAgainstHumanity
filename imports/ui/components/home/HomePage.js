@@ -116,22 +116,24 @@ class HomePage extends Component {
         alert('Please give your room a name!')
       }
       else{
-        Meteor.call('tasks.insert',nombre, [this.props.currentUser.username]);
+        
         console.log('lista: ',lista.filter(chk=> chk!==false));
         // Queria asi  Meteor.call('Cards.get', lista.filter(chk=> chk!==false) 
         const promise = this.getCartas(lista);
         promise.then(function(ret){
-          console.log('rettete: ',ret);
-          
-          console.log(aqui.state.cartas);
           aqui.setState({game_ready:true});
           
-        }).then(function(){
-  
-          history.push({
-            pathname: '/game',
-            state: { cartas_game: aqui.state.cartas, nombre:'test' }
-          });
+        Meteor.call('tasks.insert',nombre, [aqui.props.currentUser.username]);
+        return true;
+        }).then(function(ret){
+        const current_juego = Tasks.find({'owner':aqui.props.currentUser._id}).fetch();
+        return current_juego;
+        }).then(function(game){
+          console.log('Juegos: ', game)
+        history.push({
+          pathname: '/game',
+          state: { cartas_game: aqui.state.cartas, nombre:'test', current_game:game, jugador:aqui.props.currentUser.username }
+        });
         
         });
       }
@@ -167,6 +169,7 @@ class HomePage extends Component {
           key={task._id}
 
           task={task}
+          historia={this.props.history}
 
           showPrivateButton={showPrivateButton}
 
@@ -176,6 +179,35 @@ class HomePage extends Component {
 
     });
 
+  }
+  renderCheckBoxes(){
+    return( <Row>
+        <Col xs='3'>
+        <Row>
+        <Col xs='4'><Label for="checkbox1">Base Cards</Label> </Col>
+        <Col xs='8'><Input type="checkbox" id="checkbox1" onChange={this.handleChangeBase}/></Col>
+        </Row>
+        </Col>
+        <Col xs="3">
+        <Row>
+        <Col xs='4'><Label for="checkbox2">Expan 1</Label> </Col>
+        <Col xs='8'><Input type="checkbox" id="checkbox2" onChange={this.handleChangeExpansion1}/></Col>
+        </Row>
+        </Col>
+        <Col xs="3">
+        <Row>
+        <Col xs='4'><Label for="checkbox3">Expan 2</Label> </Col>
+        <Col xs='8'><Input type="checkbox" id="checkbox3" onChange={this.handleChangeExpansion2}/></Col>
+        </Row>
+        </Col>
+        <Col xs="3">
+        <Row>
+        <Col xs='4'><Label for="checkbox4">Expan 3</Label> </Col>
+        <Col xs='8'><Input type="checkbox" id="checkbox4" onChange={this.handleChangeExpansion3}/></Col>
+        </Row>
+        </Col>
+        </Row>
+      )
   }
 
   renderCreateGame(){
@@ -194,33 +226,7 @@ class HomePage extends Component {
             </Row>
           </Col>
         </Row>
-        <Row> 
-          <Col xs='3'>
-            <Row>
-              <Col xs='4'><Label for="checkbox1">Base Cards</Label> </Col>  
-              <Col xs='8'><Input type="checkbox" id="checkbox1" onChange={this.handleChangeBase}/></Col>
-            </Row>
-          </Col>
-          <Col xs="3">
-            <Row> 
-              <Col xs='4'><Label for="checkbox2">Expan 1</Label> </Col>  
-              <Col xs='8'><Input type="checkbox" id="checkbox2" onChange={this.handleChangeExpansion1}/></Col>
-            </Row>
-          </Col>
-          <Col xs="3">
-            <Row>
-              <Col xs='4'><Label for="checkbox3">Expan 2</Label> </Col>  
-              <Col xs='8'><Input type="checkbox" id="checkbox3" onChange={this.handleChangeExpansion2}/></Col>
-            </Row>
-          </Col>
-          <Col xs="3">
-            <Row> 
-              <Col xs='4'><Label for="checkbox4">Expan 3</Label> </Col>  
-              <Col xs='8'><Input type="checkbox" id="checkbox4" onChange={this.handleChangeExpansion3}/></Col>
-            </Row>
-          </Col>
-          
-        </Row>
+        {this.renderCheckBoxes()}
         <Row className='border'>
           <Col xs="10">
             <div className="form-group">
@@ -238,9 +244,6 @@ class HomePage extends Component {
 
   }
 
-  redirect() {
-    this.props.history.push('/game');
-  }
 
   render() {
 

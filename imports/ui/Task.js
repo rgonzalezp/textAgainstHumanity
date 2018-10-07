@@ -6,6 +6,8 @@ import { Meteor } from 'meteor/meteor';
 import classnames from 'classnames';
 
 import './Task.css';
+import { Button } from 'reactstrap';
+
 // Task component - represents a single todo item
 
 export default class Task extends Component {
@@ -29,6 +31,25 @@ export default class Task extends Component {
 
     Meteor.call('tasks.setPrivate', this.props.task._id, ! this.props.task.private);
 
+  }
+
+  redirect() {
+    this.props.history.push('/game');
+  }
+
+  joinGameRoom(){
+    console.log('entra a game room')
+    console.log(this.props.task)
+      const history = this.props.historia
+      Meteor.call('tasks.addPlayer',this.props.task._id )
+      history.push({
+        pathname: '/game',
+        state: { current_game:Tasks.find({_id:this.props.task._id}).fetch() }
+      });
+  }
+
+  renderButtonJoin(){
+    return (<Button onClick={this.joinGameRoom.bind(this)}>Join</Button>)
   }
 
   render() {
@@ -56,10 +77,9 @@ export default class Task extends Component {
 
           </button>
 
-        ) : ''}
+        ) : this.renderButtonJoin()  }
         <span className="text">
-
-          <strong>Host:</strong> {this.props.task.username}  || <strong>Game:</strong> {this.props.task.text}  || <strong>Players:</strong> {this.props.task.players?this.props.task.players.filter((pl)=>{pl===this.props.username}):''}
+          <strong>Host:</strong> {this.props.task.username}  || <strong>Game:</strong> {this.props.task.text}  || <strong>Players:</strong> {this.props.task.players.filter(ply=>ply!==this.props.task.username)}
 
         </span>
 
