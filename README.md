@@ -38,6 +38,7 @@ Add link to demo
 ## Cards
 - Decks provided by : https://crhallberg.com/cah/
 - To import decks of cards use `mongoimport --host localhost:3001 --db meteor --collection Cartas --type json --file db/bd_cards.json --jsonArray`
+- Add your own personal made decks too!
 
 ## Copyright and license
 Code Copyright 2018 Ricardo Enrique Gonzalez Peñuela, Esteban Galvis. Code released under the MIT license.
