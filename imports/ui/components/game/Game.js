@@ -218,7 +218,7 @@ class Game extends Component {
       <div>
        <Container>
         <Row>
-        <Col sm = '3' >
+        <Col sm = '4' >
         <div className="panel panel-default sidebar center-block">
           <div className="panel-body">
             <Timer 
@@ -226,21 +226,20 @@ class Game extends Component {
             checkGameState= {this.checkGameState}/>
           </div>
         </div>
-        </Col>
-        <Col sm = '6' >
-        <div className="panel panel-default cronometer center-block">
-          <div className="panel-body">
-            
-          </div>
-        </div>
-        </Col>
-        <Col sm = '3' >
         <div className="panel panel-default sidebar center-block">
           <div className="panel-body">
           {this.state.master?this.renderMasterBoard():this.renderSlaveBoard()}
           </div>
         </div>
         </Col>
+        <Col sm = '8' >
+        <div className="panel panel-default cronometer center-block">
+          <div className="panel-body">
+            
+          </div>
+        </div>
+        </Col>
+      
       </Row>
     </Container>
       </div>

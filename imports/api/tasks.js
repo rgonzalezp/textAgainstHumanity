@@ -12,24 +12,33 @@ if (Meteor.isServer) {
   // This code only runs on the server
   // Only publish tasks that are public or belong to the current user
   Meteor.publish('tasks', function tasksPublication() {
-  return Tasks.find({
+    return Tasks.find({
 
-    $or: [
+      $or: [
 
-      { private: { $ne: true } },
+        { private: { $ne: true } },
 
-      { owner: this.userId },
+        { owner: this.userId },
 
-    ],
+      ],
 
+    });
   });
-});
-Meteor.publish('task', function tasksPublication(owr) {
-  console.log('Entro a publish task',owr)
-  return Tasks.findOne({
-    owner:owr
+
+  Meteor.publish('task', function tasksPublication(owr) {
+    console.log('Entro a publish task',owr);
+    return Tasks.findOne({
+      owner:owr
+    });
   });
-});
+
+  Meteor.publish('gameTime', function tasksPublication(owr) {
+    console.log('Entro a game Time',owr);
+    return Tasks.findOne({
+      owner:owr
+    });
+  });
+
 }
 
 Meteor.methods({
@@ -51,12 +60,12 @@ Meteor.methods({
     
     const game = Tasks.findOne({
       owner: this.userId
-  });
-  console.log('Game?: ',game)
+    });
+    console.log('Game?: ',game);
     if(!game)
     {
 
-      console.log('Do you enter??: ')
+      console.log('Do you enter??: ');
       
       Tasks.insert({
         text: text,
@@ -122,6 +131,17 @@ Meteor.methods({
        if(typeof(current_user)==='undefined'){
          alert('Please login or create account to play!')
        }
+    }
+  },
+
+  'tasks.changeTime'(taskId, newTime) {
+    const task = Tasks.findOne(taskId);
+    const current_user = Meteor.users.findOne(this.userId);
+    console.log('entra a changeTime: ',task);
+    console.log('current user:  ',current_user);
+    if (task.owner === this.userId && current_user) {
+      console.log('task.time: ',task.time);
+      Tasks.update(taskId, { $set: { time: newTime } });
     }
   },
 
