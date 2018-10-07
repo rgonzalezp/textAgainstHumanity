@@ -28,9 +28,10 @@ Add link to demo
 - Esteban Galvis: https://tebandesade.github.io/
 
 ## Quickstart:
-
+- Small note: You need to have installed mongodb and meteor to make the necessary imports to the mongo database and run the app
 - ```meteor npm install``` to install node modules in the project folder
-- ```npm run start``` to deploy the local server
+- ```meteor``` to deploy the local server
+- Make sure you first import the card decks (Some default decks in the /db folder) before you start playing
 
 ## Preview
 ![alt text](images/WebScreenshot.png "Preview of Optimize")
