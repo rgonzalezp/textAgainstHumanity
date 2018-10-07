@@ -128,11 +128,6 @@ class Timer extends Component {
             <div className="col-sm-6">
               <input id="minutes" className="form-control" type="number" onChange={this.handleChange}/>
             </div>
-            <div className="col-sm-3">
-              <Button className="btn btn-success" onClick={this.startTimer}>
-              Start game!
-              </Button>
-            </div>
           </div>
         </div>
       </div>

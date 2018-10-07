@@ -122,8 +122,8 @@ class Game extends Component {
       {this.renderPlayers()}
       <Row>
         <Col sm='12'>
-        <Button outline color="success"  block>
-          Start
+        <Button onClick={this.timer.startTimer} outline color="success"  block>
+          Start game!
         </Button>
         </Col>
       </Row>
@@ -216,15 +216,33 @@ class Game extends Component {
   render() {
     return (
       <div>
-        <div className="panel panel-default cronometer center-block">
+       <Container>
+        <Row>
+        <Col sm = '3' >
+        <div className="panel panel-default sidebar center-block">
           <div className="panel-body">
             <Timer 
             ref={(timer) => {this.timer = timer;}}
             checkGameState= {this.checkGameState}/>
-            {this.state.master?this.renderMasterBoard():this.renderSlaveBoard()}
-
           </div>
         </div>
+        </Col>
+        <Col sm = '6' >
+        <div className="panel panel-default cronometer center-block">
+          <div className="panel-body">
+            
+          </div>
+        </div>
+        </Col>
+        <Col sm = '3' >
+        <div className="panel panel-default sidebar center-block">
+          <div className="panel-body">
+          {this.state.master?this.renderMasterBoard():this.renderSlaveBoard()}
+          </div>
+        </div>
+        </Col>
+      </Row>
+    </Container>
       </div>
     );  
   }
