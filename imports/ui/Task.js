@@ -41,10 +41,11 @@ export default class Task extends Component {
     console.log('entra a game room')
     console.log(this.props.task)
       const history = this.props.historia
-
+      const user_   = this.props.current_userr
+      console.log(user_!==null)
       //did this twice: One here and another in tasks.addPlayer
       // dont want to break stuff so wont change it for now because of time
-      if(typeof(this.props.current_user)!=='undefined')
+      if(user_!==null)
       {
         Meteor.call('tasks.addPlayer',this.props.task._id )
         history.push({
