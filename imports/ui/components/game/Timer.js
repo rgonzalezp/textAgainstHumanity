@@ -57,7 +57,6 @@ class Timer extends Component {
   }
 
   reduceTimer() {
-
     if(this.state.currentTime.get('minutes') === 0 && this.state.currentTime.get('seconds') === 0 && this.state.gamePhase === 0)
     {
       this.setState({
@@ -89,6 +88,10 @@ class Timer extends Component {
     
     this.setCurrentTime(newTime);
 
+    if(this.props.master) {
+      Meteor.call('tasks.changeTime', this.props.task[0]._id, newTime);
+    }
+
   }
 
   setGamePhase() {
@@ -115,9 +118,6 @@ class Timer extends Component {
   componentDidUpdate(prevProps, prevState){
     if(prevState.timerState !== this.state.timerState) {
       this.props.checkGameState(this.state.gamePhase,this.state.timerState);
-      if(this.props.master) {
-        Meteor.call('tasks.changeTime', this.props.task[0]._id, this.state.currentTime);
-      }
     }
   }
 
@@ -156,21 +156,5 @@ class Timer extends Component {
   }
 }
 
-export default withTracker((props) => {
-  const game = Tasks.find({_id:props.task[0]._id}).fetch();
-  console.log(game);
-  Meteor.subscribe('gameTime',game._id);
-  console.log('timerarrived');
-
-  if (!props.master) {
-    return {};
-  }
-  
-  
-  
-  //console.log('task_abajo: ',task_2)
-  return {
-    time: game.currentTime
-  };
-})(Timer);
+export default Timer;
 

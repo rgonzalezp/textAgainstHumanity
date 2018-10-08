@@ -34,11 +34,10 @@ if (Meteor.isServer) {
     });
   });
 
-  Meteor.publish('gameTime', function tasksPublication(owr) {
-    console.log('Entro a game Time',owr);
-    return Tasks.findOne({
-      owner:owr
-    });
+  Meteor.publish('gameTime', function tasksPublication(gameId) {
+    console.log('Entro a game Time',gameId);
+    return Tasks.findOne(gameId
+    );
   });
 
 }
