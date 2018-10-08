@@ -89,7 +89,7 @@ class Timer extends Component {
     this.setCurrentTime(newTime);
 
     if(this.props.master) {
-      Meteor.call('tasks.changeTime', this.props.task[0]._id, newTime);
+      Meteor.call('tasks.changeTime', this.props.task[0]._id, moment.duration(newTime));
     }
 
   }
@@ -155,9 +155,11 @@ class Timer extends Component {
       <div>
         <h1>Rounds left: {this.state.gamePhase}</h1>
         <div className="container-fluid">
-          <TimerDisplay 
+          {this.props.master?<TimerDisplay 
             currentTime={this.state.currentTime}
-          />
+          />:<TimerDisplay 
+            currentTime={moment.duration(this.props.game[0].time)}
+          />}
           {this.renderConfig()}
         </div>    
       </div>
@@ -166,15 +168,11 @@ class Timer extends Component {
 }
 
 export default withTracker((props) => {
-  const game = Tasks.find({_id:props.task[0]._id}).fetch();
   
-  Meteor.subscribe('gameTime',game[0]._id);
-  console.log('timerarrived', game);
+  Meteor.subscribe('gameTime',props.task[0]._id);
   
-  
-  //console.log('task_abajo: ',task_2)
   return {
-    game: game
+    game: Tasks.find(props.task[0]._id).fetch()
   };
 })(Timer);
 
