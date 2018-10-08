@@ -41,11 +41,20 @@ export default class Task extends Component {
     console.log('entra a game room')
     console.log(this.props.task)
       const history = this.props.historia
-      Meteor.call('tasks.addPlayer',this.props.task._id )
-      history.push({
-        pathname: '/game',
-        state: { current_game:Tasks.find({_id:this.props.task._id}).fetch() }
-      });
+
+      //did this twice: One here and another in tasks.addPlayer
+      // dont want to break stuff so wont change it for now because of time
+      if(typeof(this.props.current_user)!=='undefined')
+      {
+        Meteor.call('tasks.addPlayer',this.props.task._id )
+        history.push({
+          pathname: '/game',
+          state: { current_game:Tasks.find({_id:this.props.task._id}).fetch() }
+        });
+      }
+      else{
+        alert('Please login or create an account first!')
+      }
   }
 
   renderButtonJoin(){
