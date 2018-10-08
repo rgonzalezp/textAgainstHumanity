@@ -192,7 +192,15 @@ class Game extends Component {
    }
   }
 
-  renderPlayers(){
+  renderMasterTimer() {
+
+  }
+
+  renderSlaveTimer() {
+
+  }
+
+  renderPlayers() {
     console.log('RenderPlayers: ', this.state.task)
     const {players} = this.state.task
 
@@ -213,9 +221,9 @@ class Game extends Component {
       </ListGroup>
       </Container>  
 
- )
-}
+    )
   }
+}
   render() {
     return (
       <div>
@@ -231,6 +239,7 @@ class Game extends Component {
             ref={(timer) => {this.timer = timer}}
             checkGameState= {this.checkGameState}
             />
+            
           </div>
         </div>
         <div className="panel panel-default sidebar center-block">

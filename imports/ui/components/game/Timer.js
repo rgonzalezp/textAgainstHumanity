@@ -121,6 +121,10 @@ class Timer extends Component {
     }
   }
 
+  componentDidMount() {
+
+  }
+
   renderConfig() {
 
     return this.props.master && this.state.timerState === timerStates.NOT_SET ?
@@ -148,7 +152,11 @@ class Timer extends Component {
       <div>
         <h1>Rounds left: {this.state.gamePhase}</h1>
         <div className="container-fluid">
-          <TimerDisplay currentTime={this.state.currentTime}/>
+          <TimerDisplay 
+            currentTime={this.state.currentTime} 
+            task={this.props.task}
+            master = {this.state.master}
+          />
           {this.renderConfig()}
         </div>		
       </div>
