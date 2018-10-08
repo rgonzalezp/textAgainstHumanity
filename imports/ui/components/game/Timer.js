@@ -42,6 +42,7 @@ class Timer extends Component {
   }
 
   startTimer() {
+    console.log("llegue");
     if(this.state.timerState === timerStates.VOTING) {
       this.setCurrentTime(this.state.votingTime);
       this.setState({
@@ -114,6 +115,9 @@ class Timer extends Component {
   componentDidUpdate(prevProps, prevState){
     if(prevState.timerState !== this.state.timerState) {
       this.props.checkGameState(this.state.gamePhase,this.state.timerState);
+      if(this.props.master) {
+        Meteor.call('tasks.changeTime', this.props.task[0]._id, this.state.currentTime);
+      }
     }
   }
 
@@ -153,16 +157,20 @@ class Timer extends Component {
 }
 
 export default withTracker((props) => {
-  Meteor.subscribe('gameTime');
+  const game = Tasks.find({_id:props.task[0]._id}).fetch();
+  console.log(game);
+  Meteor.subscribe('gameTime',game._id);
   console.log('timerarrived');
 
-  let dueno = props.owner;
+  if (!props.master) {
+    return {};
+  }
   
   
-  const task_2 = Tasks.find({owner:dueno}).fetch()
+  
   //console.log('task_abajo: ',task_2)
   return {
-    task: task_2
+    time: game.currentTime
   };
 })(Timer);
 

@@ -4,6 +4,8 @@ import { Mongo } from 'meteor/mongo';
 
 import { check } from 'meteor/check';
 
+import moment from 'moment';
+
  
 
 export const Tasks = new Mongo.Collection('tasks');
@@ -73,6 +75,7 @@ Meteor.methods({
         players: players,
         owner: this.userId,
         username: Meteor.users.findOne(this.userId).username,
+        time:moment.duration( 3 , 'minutes' ),
   
       });  
 
@@ -139,10 +142,10 @@ Meteor.methods({
     const current_user = Meteor.users.findOne(this.userId);
     console.log('entra a changeTime: ',task);
     console.log('current user:  ',current_user);
-    if (task.owner === this.userId && current_user) {
+   
       console.log('task.time: ',task.time);
-      Tasks.update(taskId, { $set: { time: newTime } });
-    }
+      Tasks.update(task._id, { $set: { time: newTime } });
+    
   },
 
   'tasks.setPrivate'(taskId, setToPrivate) {

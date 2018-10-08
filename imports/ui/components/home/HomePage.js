@@ -199,7 +199,8 @@ class HomePage extends Component {
           <Col xs='4'><Label for="checkbox3">Expan 2</Label> </Col>
           <Col xs='8'><Input type="checkbox" id="checkbox3" onChange={this.handleChangeExpansion2}/></Col>
         </Row>
-          
+      </Col>
+      <Col xs="3">
         <Row>
           <Col xs='4'><Label for="checkbox4">Expan 3</Label> </Col>
           <Col xs='8'><Input type="checkbox" id="checkbox4" onChange={this.handleChangeExpansion3}/></Col>

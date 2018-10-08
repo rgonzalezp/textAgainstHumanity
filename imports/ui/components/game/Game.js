@@ -37,8 +37,10 @@ class Game extends Component {
   handleChangeInput2(evt){
     console.log(`Input 2: ${evt.target.value}`);
   }
+  
 
-    updateCardState = () => {
+
+  updateCardState = () => {
     this.setState({cards:this.props.location.state.cartas_game})
   }
   updateTaskState = ()=>{
@@ -74,7 +76,7 @@ class Game extends Component {
       }
   
     }
-    updateMaster =()=>{
+    updateMaster = () => {
 
       console.log('UPDATEMASTER: ', this.state.player)
           this.setState({master: !this.state.master})
@@ -94,6 +96,7 @@ class Game extends Component {
     console.log("currentGameState",gameState);
   }
 
+  
   componentDidMount(){
    // console.log('didMount: ',this.props.task)
     if(this.state.cards.length===0){
@@ -122,7 +125,7 @@ class Game extends Component {
       {this.renderPlayers()}
       <Row>
         <Col sm='12'>
-        <Button onClick={this.timer.startTimer} outline color="success"  block>
+        <Button onClick = {this.timer.startTimer } outline color="success"  block>
           Start game!
         </Button>
         </Col>
@@ -221,11 +224,13 @@ class Game extends Component {
         <Col sm = '4' >
         <div className="panel panel-default sidebar center-block">
           <div className="panel-body">
-            <Timer 
+            <Timer
+            task = {this.props.task} 
             master = {this.state.master}
             owner = {this.props.owner}
-            ref={(timer) => {this.timer = timer;}}
-            checkGameState= {this.checkGameState}/>
+            ref={(timer) => {this.timer = timer}}
+            checkGameState= {this.checkGameState}
+            />
           </div>
         </div>
         <div className="panel panel-default sidebar center-block">
