@@ -140,6 +140,9 @@ class Timer extends Component {
             <div className="col-sm-6">
               <input id="minutes" className="form-control" type="number" onChange={this.handleChange}/>
             </div>
+            <Button className='startbtn'onClick = {this.startTimer } outline color="success"  block>
+          Start game!
+            </Button>
           </div>
         </div>
       </div>
@@ -153,16 +156,25 @@ class Timer extends Component {
         <h1>Rounds left: {this.state.gamePhase}</h1>
         <div className="container-fluid">
           <TimerDisplay 
-            currentTime={this.state.currentTime} 
-            task={this.props.task}
-            master = {this.state.master}
+            currentTime={this.state.currentTime}
           />
           {this.renderConfig()}
-        </div>		
+        </div>    
       </div>
     );
   }
 }
 
-export default Timer;
+export default withTracker((props) => {
+  const game = Tasks.find({_id:props.task[0]._id}).fetch();
+  
+  Meteor.subscribe('gameTime',game[0]._id);
+  console.log('timerarrived', game);
+  
+  
+  //console.log('task_abajo: ',task_2)
+  return {
+    game: game
+  };
+})(Timer);
 

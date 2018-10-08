@@ -125,9 +125,6 @@ class Game extends Component {
       {this.renderPlayers()}
       <Row>
         <Col sm='12'>
-        <Button onClick = {this.timer.startTimer } outline color="success"  block>
-          Start game!
-        </Button>
         </Col>
       </Row>
     </Container>)
@@ -239,7 +236,7 @@ class Game extends Component {
             ref={(timer) => {this.timer = timer}}
             checkGameState= {this.checkGameState}
             />
-            
+
           </div>
         </div>
         <div className="panel panel-default sidebar center-block">

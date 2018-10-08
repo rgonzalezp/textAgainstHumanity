@@ -11,7 +11,7 @@ Like cards against humanity, but with your input!
 - [Copyright and license](#copyright-and-license)
 
 ## Demo
-Add link to demo
+http://40.87.12.97:3000/
 
 ## Objectives
 - Recreate a fun game with a small new twist
@@ -40,6 +40,7 @@ Add link to demo
 ## Cards
 - Decks provided by : https://crhallberg.com/cah/
 - To import decks of cards use `mongoimport --host localhost:3001 --db meteor --collection Cartas --type json --file db/bd_cards.json --jsonArray`
+
 - Add your own personal made decks too!
 
 ## Copyright and license
