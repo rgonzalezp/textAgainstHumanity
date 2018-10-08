@@ -182,32 +182,31 @@ class HomePage extends Component {
   }
   renderCheckBoxes(){
     return( <Row>
-        <Col xs='3'>
+      <Col xs='3'>
         <Row>
-        <Col xs='4'><Label for="checkbox1">Base Cards</Label> </Col>
-        <Col xs='8'><Input type="checkbox" id="checkbox1" onChange={this.handleChangeBase}/></Col>
+          <Col xs='4'><Label for="checkbox1">Base Cards</Label> </Col>
+          <Col xs='8'><Input type="checkbox" id="checkbox1" onChange={this.handleChangeBase}/></Col>
         </Row>
-        </Col>
-        <Col xs="3">
+      </Col>
+      <Col xs="3">
         <Row>
-        <Col xs='4'><Label for="checkbox2">Expan 1</Label> </Col>
-        <Col xs='8'><Input type="checkbox" id="checkbox2" onChange={this.handleChangeExpansion1}/></Col>
+          <Col xs='4'><Label for="checkbox2">Expan 1</Label> </Col>
+          <Col xs='8'><Input type="checkbox" id="checkbox2" onChange={this.handleChangeExpansion1}/></Col>
         </Row>
-        </Col>
-        <Col xs="3">
+      </Col>
+      <Col xs="3">
         <Row>
-        <Col xs='4'><Label for="checkbox3">Expan 2</Label> </Col>
-        <Col xs='8'><Input type="checkbox" id="checkbox3" onChange={this.handleChangeExpansion2}/></Col>
+          <Col xs='4'><Label for="checkbox3">Expan 2</Label> </Col>
+          <Col xs='8'><Input type="checkbox" id="checkbox3" onChange={this.handleChangeExpansion2}/></Col>
         </Row>
-        </Col>
-        <Col xs="3">
+          
         <Row>
-        <Col xs='4'><Label for="checkbox4">Expan 3</Label> </Col>
-        <Col xs='8'><Input type="checkbox" id="checkbox4" onChange={this.handleChangeExpansion3}/></Col>
+          <Col xs='4'><Label for="checkbox4">Expan 3</Label> </Col>
+          <Col xs='8'><Input type="checkbox" id="checkbox4" onChange={this.handleChangeExpansion3}/></Col>
         </Row>
-        </Col>
-        </Row>
-      )
+      </Col>
+    </Row>
+    );
   }
 
   renderCreateGame(){

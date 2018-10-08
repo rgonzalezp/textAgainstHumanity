@@ -222,6 +222,8 @@ class Game extends Component {
         <div className="panel panel-default sidebar center-block">
           <div className="panel-body">
             <Timer 
+            master = {this.state.master}
+            owner = {this.props.owner}
             ref={(timer) => {this.timer = timer;}}
             checkGameState= {this.checkGameState}/>
           </div>
@@ -275,6 +277,7 @@ export default withTracker((props) => {
   const task_2 = Tasks.find({owner:dueno}).fetch()
   //console.log('task_abajo: ',task_2)
   return {
-    task: task_2
+    task: task_2,
+    owner: dueno
   };
 })(Game);

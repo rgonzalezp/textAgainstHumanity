@@ -3,9 +3,13 @@ import {Button} from 'reactstrap';
 import TimerDisplay from './TimerDisplay';
 import moment from 'moment';
 import * as timerStates from './timerStates';
+import { Tasks } from '../../../api/tasks.js';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
+
 class Timer extends Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
 
     this.state= {
       currentTime: moment.duration( 3 , 'minutes' ),
@@ -115,7 +119,7 @@ class Timer extends Component {
 
   renderConfig() {
 
-    return this.state.timerState === timerStates.NOT_SET ?
+    return this.props.master && this.state.timerState === timerStates.NOT_SET ?
       <div> 
         <div className="row">
           <h2 className="text-primary">Set Round Time</h2>
@@ -148,4 +152,17 @@ class Timer extends Component {
   }
 }
 
-export default Timer;
+export default withTracker((props) => {
+  Meteor.subscribe('gameTime');
+  console.log('timerarrived');
+
+  let dueno = props.owner;
+  
+  
+  const task_2 = Tasks.find({owner:dueno}).fetch()
+  //console.log('task_abajo: ',task_2)
+  return {
+    task: task_2
+  };
+})(Timer);
+
