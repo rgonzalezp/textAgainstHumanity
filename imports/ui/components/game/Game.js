@@ -25,6 +25,7 @@ class Game extends Component {
     this.checkGameState = this.checkGameState.bind(this);
     this.updateCardState = this.updateCardState.bind(this)
     this.updateTaskState = this.updateTaskState.bind(this);
+    // ¿Por que dejo de usar ";" al final? o todos con ";" o ninguno
     this.updateCurrentPlayer =this.updateCurrentPlayer.bind(this)
     this.updateMaster   = this.updateMaster.bind(this)
   }
@@ -110,6 +111,7 @@ class Game extends Component {
       this.updateCardState()
     }
     else{
+      //Esto no sirve de nada
       console.log('comodidmount else')
         if(this.state.cards.length)
         {
@@ -161,6 +163,7 @@ class Game extends Component {
       );
   }
 
+        //Esto esta comentado, se podia borrar
 /*
   componentDidUpdate(){
     console.log('begini ')
@@ -308,6 +311,7 @@ export default withTracker((props) => {
     //console.log(props.location.state.current_game[0].owner)
   }
   console.log(dueno)
+  // Era mejor sacar esto: props.location.state.current_game[0].owner a una variable owner para entender mejor el subscribe
   Meteor.subscribe('task',props.location.state.current_game[0].owner)
 
   return {
