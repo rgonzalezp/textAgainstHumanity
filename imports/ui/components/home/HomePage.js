@@ -120,21 +120,29 @@ class HomePage extends Component {
         console.log('lista: ',lista.filter(chk=> chk!==false));
         // Queria asi  Meteor.call('Cards.get', lista.filter(chk=> chk!==false) 
         const promise = this.getCartas(lista);
+        const current_user = this.props.currentUser
+        console.log('Current user const: ', current_user)
         promise.then(function(ret){
+          console.log('Current user const1: ', current_user)
           aqui.setState({game_ready:true});
-          
-        Meteor.call('tasks.insert',nombre, [aqui.props.currentUser.username]);
+        Meteor.call('tasks.insert',nombre, [current_user.username]);
         return true;
         }).then(function(ret){
-        const current_juego = Tasks.find({'owner':aqui.props.currentUser._id}).fetch();
+          console.log('Current user const2: ', current_user)
+        const current_juego = Tasks.find({'owner':current_user._id}).fetch();
         return current_juego;
         }).then(function(game){
+          console.log('Cartas  : ', aqui.state.cartas)
+          console.log('JUgador: ',current_user.username  )
           console.log('Juegos: ', game)
         history.push({
           pathname: '/game',
-          state: { cartas_game: aqui.state.cartas, nombre:'test', current_game:game, jugador:aqui.props.currentUser.username }
+          state: { cartas_game: aqui.state.cartas, nombre:'test', current_game:game, jugador:current_user }
         });
         
+        }).catch(function(error){
+          console.log('What is the error: ', error)
+
         });
       }
 

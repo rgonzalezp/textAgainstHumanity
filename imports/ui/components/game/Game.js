@@ -101,7 +101,7 @@ class Game extends Component {
    // console.log('didMount: ',this.props.task)
     if(this.state.cards.length===0){
      // console.log('task: ',this.props.location.state.current_game)
-      const nPlyr   = this.props.location.state.jugador
+      const nPlyr   = this.props.location.state.jugador.username
       //console.log('player: ',this.props.location.state.jugador)
      // console.log('cards: ',this.props.location.state.cartas_game)
      // this.setState({task:this.props.location.state.current_game[0]});
@@ -117,11 +117,20 @@ class Game extends Component {
         }
     }
   }
+  changeTask(){
+    if(this.state.task.players.length!==this.props.task[0].players.length)
+    {
+      this.setState({task:this.props.task[0]})
+    }
+  }
   renderMasterBoard(){
     console.log('Rendermasterboard')
     console.log(this.state.master)
+    console.log('Task diff')
     console.log(this.state.task)
+    console.log(this.props.task[0])
     return (<Container>
+      {this.changeTask()}
       {this.renderPlayers()}
       <Row>
         <Col sm='12'>
@@ -132,12 +141,14 @@ class Game extends Component {
 
   renderSlaveBoard(){
     console.log('comomomun')
-    //console.log(this.state.task)
-        if(typeof(this.state.task)==='undefined'){
+    let empty = Object.getOwnPropertyNames(this.state.task).length === 0
+    console.log(empty)
+
+      if(typeof(this.state.task)==='undefined'|| empty){
           console.log('task is undefined')
         }
         else{
-         // console.log(this.state.task)
+         console.log(this.state)
           return(this.state.task?this.renderPlayers():'Loading')
         }
   }
@@ -150,13 +161,15 @@ class Game extends Component {
       );
   }
 
+/*
   componentDidUpdate(){
     console.log('begini ')
     //console.log()
+    /*
    if(typeof(this.state.player)!=='undefined'&& typeof(this.state.task)!=='undefined')
    {
      //console.log(this.state.player)
-     //console.log('haaa')
+     console.log('haaa')
      //console.log(this.state.task)
       if(this.state.player===this.state.task.username){
        // console.log('iii')
@@ -173,10 +186,13 @@ class Game extends Component {
           if(typeof(this.props.task[0])!=='undefined')
           {
             console.log('whyyes')
-            console.log(typeof(this.props.task[0].players))
+            console.log(this.props.task[0].players)
             console.log(this.state.task)
-            if(this.props.task[0].players!==this.state.task.players)
+            console.log('why is this like this: ',this.props.task[0].players!==this.state.task.players)
+            console.log(this.state.task.players)
+            if(this.props.task[0].players.length!==this.state.task.players.length)
             {
+              console.log('did enter to change?:')
               this.setState({task:this.props.task[0]})
             }
           }
@@ -187,8 +203,9 @@ class Game extends Component {
      console.log('heeee')
      console.log(this.state.task)
    }
+   
   }
-
+*/
   renderMasterTimer() {
 
   }
@@ -222,21 +239,27 @@ class Game extends Component {
   }
 }
   render() {
+    const player = this.props.location.state.jugador
+    const master_puppets = this.props.location.state.current_game[0].owner===player._id?true:false
+    if(master_puppets && this.state.master===false)
+    {
+      this.updateMaster();
+    }
     return (
       <div>
        <Container>
         <Row>
         <Col sm = '4' >
         <div className="panel panel-default sidebar center-block">
-          <div className="panel-body">
-            <Timer
+        <div className="panel-body">
+     {       <Timer
             task = {this.props.task} 
             master = {this.state.master}
             owner = {this.props.owner}
             ref={(timer) => {this.timer = timer}}
             checkGameState= {this.checkGameState}
             />
-
+    }
           </div>
         </div>
         <div className="panel panel-default sidebar center-block">
@@ -261,7 +284,6 @@ class Game extends Component {
 }
 
 export default withTracker((props) => {
-  Meteor.subscribe('tasks')
   console.log('Wahtadapmotherfucker')
 
   let dueno
@@ -285,10 +307,11 @@ export default withTracker((props) => {
     //console.log('entro a segundo if')
     //console.log(props.location.state.current_game[0].owner)
   }
-  const task_2 = Tasks.find({owner:dueno}).fetch()
-  //console.log('task_abajo: ',task_2)
+  console.log(dueno)
+  Meteor.subscribe('task',props.location.state.current_game[0].owner)
+
   return {
-    task: task_2,
-    owner: dueno
+    task: Tasks.find({owner:dueno}).fetch(),
+    owner: dueno,
   };
 })(Game);

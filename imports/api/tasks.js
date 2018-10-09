@@ -29,14 +29,14 @@ if (Meteor.isServer) {
 
   Meteor.publish('task', function tasksPublication(owr) {
     console.log('Entro a publish task',owr);
-    return Tasks.findOne({
+    return Tasks.find({
       owner:owr
     });
   });
 
   Meteor.publish('gameTime', function tasksPublication(gameId) {
     console.log('Entro a game Time',gameId);
-    return Tasks.findOne(gameId
+    return Tasks.find({_id:gameId}
     );
   });
 
@@ -47,14 +47,10 @@ Meteor.methods({
   'tasks.insert'(text,players) {
 
     check(text, String);
-
     console.log('players: ',players)
     // Make sure the user is logged in before inserting a task
-
     if (! this.userId) {
-
       throw new Meteor.Error('not-authorized');
-
     }
 
     console.log('what is this.userId: ', this.userId)

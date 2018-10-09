@@ -44,12 +44,14 @@ class Timer extends Component {
   startTimer() {
     console.log("llegue");
     if(this.state.timerState === timerStates.VOTING) {
-      this.setCurrentTime(this.state.votingTime);
-      this.setState({
+      console.log('voting')
+      //this.setCurrentTime(this.state.votingTime);
+      //this.setState({
         timer: setInterval(this.reduceTimer, 1000)
-      });
+      //});
     } else {
-      this.setState({
+      console.log('not voting phase')
+       this.setState({
         timerState:timerStates.RUNNING,
         timer: setInterval(this.reduceTimer, 1000)
       });
@@ -88,9 +90,15 @@ class Timer extends Component {
     
     this.setCurrentTime(newTime);
 
+    
+    /*
     if(this.props.master) {
       Meteor.call('tasks.changeTime', this.props.task[0]._id, moment.duration(newTime));
     }
+    else{
+      console.log('sup change time?')
+    }
+    */
 
   }
 
@@ -169,10 +177,11 @@ class Timer extends Component {
 
 export default withTracker((props) => {
   
+  console.log('It is timer time timeiemiemrir')
   Meteor.subscribe('gameTime',props.task[0]._id);
   
   return {
-    game: Tasks.find(props.task[0]._id).fetch()
+    game: Tasks.find({_id:props.task[0]._id}).fetch()
   };
 })(Timer);
 

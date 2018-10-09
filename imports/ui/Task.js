@@ -50,7 +50,7 @@ export default class Task extends Component {
         Meteor.call('tasks.addPlayer',this.props.task._id )
         history.push({
           pathname: '/game',
-          state: { current_game:Tasks.find({_id:this.props.task._id}).fetch() }
+          state: { current_game: Tasks.find({_id:this.props.task._id}).fetch(),jugador:user_ }
         });
       }
       else{
