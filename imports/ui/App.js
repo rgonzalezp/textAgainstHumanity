@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { BrowserRouter , Switch} from 'react-router-dom';
 global.jQuery = require('jquery');
+// Esta parte de bootsrap queda mejor en el HTML
 require('bootstrap');
 import 'bootstrap/dist/css/bootstrap.css';
 
