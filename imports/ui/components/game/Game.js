@@ -31,7 +31,8 @@ class Game extends Component {
       master:false,
       input_text : ['%%'],
       player_pos:-1,
-      modalIsOpen: false
+      modalIsOpen: false,
+      voted:false,
     };
     this.handleChangeInput1 = this.handleChangeInput1.bind(this);
     this.handleChangeInput2 = this.handleChangeInput2.bind(this);
@@ -231,7 +232,6 @@ class Game extends Component {
     console.log("currentRound", gamePhase);
     console.log("currentGameState",gameState);
   }
-
   
   componentDidMount(){
    // console.log('didMount: ',this.props.task)
@@ -312,7 +312,63 @@ class Game extends Component {
           return obj_temp
         }
 }
-  
+  submitVote(e) { 
+     // const player = this.returnPlayer()//this.props.task[0].player;
+
+     this.setState({
+      voted:true
+     });
+     //The id returns the array position of the player... e.g 0 = player 1
+     const voteForPlayer = e.currentTarget.id;
+      let new_obj;
+      const aqui = this
+    
+      
+
+      Meteor.call('tasks.voteForPlayer',this.props.task[0]._id,voteForPlayer);
+      console.log('Submit current game: ',this.state)
+
+      this.checkForWinner();
+
+      
+
+      /*
+      if (this.props.task[0].player_1.player===player)
+      {
+        console.log('Submit current game player1: ',this.state.input_text)
+         Meteor.call('tasks.updatePlayerText',this.props.task[0]._id,this.props.task[0].player_1,this.state.input_text)
+      }
+      else if (this.props.task[0].player_2.player===player){
+        console.log('Submit current game player2: ',this.state.input_text)
+        Meteor.call('tasks.updatePlayerText',this.props.task[0]._id,this.props.task[0].player_2,this.state.input_text)
+      }
+      else if (this.props.task[0].player_3.player===player){
+        console.log('Submit current game player3: ',this.state.input_text)
+        Meteor.call('tasks.updatePlayerText',this.props.task[0]._id,this.props.task[0].player_3,this.state.input_text)
+      }
+      else if (this.props.task[0].player_4.player===player){
+        console.log('Submit current game player4: ',this.state.input_text)
+        Meteor.call('tasks.updatePlayerText',this.props.task[0]._id,this.props.task[0].player_4,this.state.input_text)
+        
+      }
+      */
+
+  }
+
+  resetRound(task_id) {
+    const obj_array = [];
+
+    this.props.task[0].players.map((play,index)=>{
+      let obj_temp = {}
+      console.log('index: ',index)
+      console.log('player: ', play)
+       obj_temp = {'ready':false, 'player':play,'pos':index+1, 'input_text':['%%']}
+     obj_array.push(obj_temp)
+    })
+
+    Meteor.call('tasks.resetRound',task_id,obj_array);
+
+  }
 
   renderResponses() {
     const aqui = this;
@@ -327,7 +383,7 @@ class Game extends Component {
       <Row>
       <Col sm='10'>{aqui.renderSpecificPlayer(ind,aqui)}</Col>
       <Col sm='2'>
-        <Button>Vote for me!</Button>
+        {!aqui.state.voted?<Button id={ind} onClick={(e)=> this.submitVote(e)}>Vote for me!</Button>:<div>{this.renderPlayerVotes(ind,aqui)}</div>}
       </Col>
       </Row>
       </div>
@@ -345,6 +401,18 @@ class Game extends Component {
       return (<ListGroupItem key={ind}>{aqui.props.task[0].player_4.input_text[0]} </ListGroupItem>);
     }
 
+  }
+
+  renderPlayerVotes (ind,aqui) {
+    if(ind===0) {
+      return (<div>{aqui.props.task[0].player_1votes}</div>);
+    } else if (ind===1) {
+      return (<div>{aqui.props.task[0].player_2votes}</div>);
+    } else if (ind===2) {
+      return (<div>{aqui.props.task[0].player_3votes}</div>);
+    } else if (ind===3) {
+      return (<div>{aqui.props.task[0].player_4votes}</div>);
+    }
   }
 
   renderWaitForOthers(){
@@ -383,6 +451,7 @@ class Game extends Component {
       try{
         if (obj_temp.ready===false)
         {
+          this.setState({voted:false});
           return aqui.renderAnswerBlocks(aqui.props.task[0].blackcard)
         }
 
@@ -429,6 +498,7 @@ class Game extends Component {
 
   renderPlayerState(indx){
     console.log('RenderPLayerState whata up: ', indx)
+    if(!this.props.task[0].player_1.ready||!this.props.task[0].player_2.ready||!this.props.task[0].player_3.ready||!this.props.task[0].player_4.ready)
     if(indx===0){
       if (this.props.task[0].player_1.ready){
         return      ( <Button color="success">
@@ -477,6 +547,10 @@ class Game extends Component {
       </Button>)
       }
     }
+  return  ( <Button color="success">
+        voting!!
+      </Button>)
+    
   }
   renderJugador(jugadores) {
     console.log('render Jugador :',jugadores)
@@ -492,13 +566,24 @@ class Game extends Component {
       );
   }
 
-  renderMasterTimer() {
+  checkForWinner() {
+    const numVotes = Number(this.props.task[0].player_1votes)+ Number(this.props.task[0].player_2votes)+ Number(this.props.task[0].player_3votes)+ Number(this.props.task[0].player_4votes)+1;
+    console.log("votos primer",this.props.task[0].player_1votes);
+    console.log("votos primer numer",Number(this.props.task[0].player_1votes));
+    console.log("votos parse", parseInt(numVotes,10));
+    console.log("votos parse2", parseInt(this.props.task[0].player_1votes,10));
+    console.log("numero de votos", numVotes);
 
+    const aqui = this;
+      if(+numVotes===4)
+      {
+        this.getBlackCardGame();
+        console.log("JAJAJAJAJAJAJJA");
+        this.resetRound(this.props.task[0]._id);
+      }
+      
   }
 
-  renderSlaveTimer() {
-
-  }
 
   renderPlayers() {
     console.log('RenderPlayers: ', this.state.task)
@@ -537,7 +622,7 @@ renderWelcome(){
   const playerName = this.props.player
   const ownerName = this.props.task[0].username
   return <Container><Row><h2>Welcome to {ownerName}'s room, {playerName}</h2></Row>
-  <Row style={{'text-allign':'center'}}>   
+  <Row style={{'textAllign':'center'}}>   
   {this.props.task[0].game_on?<h1>Be a prick!!</h1>:this.props.master?
   <Button className='welcomeBtn'onClick = {()=> this.gameBegin(this.props.task[0]._id)} outline color="success"  block>
   Start game!

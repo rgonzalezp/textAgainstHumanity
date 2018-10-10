@@ -75,6 +75,10 @@ Meteor.methods({
         player_2:{},
         player_3:{},
         player_4:{},
+        player_1votes:0,
+        player_2votes:0,
+        player_3votes:0,
+        player_4votes:0,
         time:moment.duration( 3 , 'minutes' ),
   
       });  
@@ -159,6 +163,32 @@ Meteor.methods({
     }
     
   },
+  'tasks.voteForPlayer'(taskId,playerPos) {
+    const task = Tasks.findOne(taskId);
+    
+    const ind = playerPos;
+    console.log('entra a voteForPlayer:',ind);
+    
+    if(+ind===0) {
+      console.log('entre1');
+      Tasks.update(task._id, { $inc: { player_1votes: 1} });
+    }
+    else if (+ind===1) {
+      console.log('entre1');
+      Tasks.update(task._id, { $inc: { player_2votes: 1} });
+
+    }
+    else if (+ind===2) {
+      console.log('entre3');
+      Tasks.update(task._id, { $inc: { player_3votes: 1} });
+    }
+    else if (+ind===3) {
+      console.log('entre4'); 
+      Tasks.update(task._id, { $inc: { player_4votes: 1} });
+ 
+    }
+    
+  },
   'tasks.definePlayer'(taskId,playerArray) {
     const task = Tasks.findOne(taskId);
     if(playerArray.length===1){
@@ -176,6 +206,18 @@ Meteor.methods({
  
     }
     
+  },
+  'tasks.resetRound'(taskId,playerArray) {
+    const task = Tasks.findOne(taskId);
+    Tasks.update(task._id, { $set: {
+      player_1: playerArray[0], player_2: playerArray[1], player_3: playerArray[2], player_4: playerArray[3],
+      player_1votes:0,
+      player_2votes:0,
+      player_3votes:0,
+      player_4votes:0,
+    } });
+ 
+
   },
 
   'tasks.changeTime'(taskId, newTime) {
