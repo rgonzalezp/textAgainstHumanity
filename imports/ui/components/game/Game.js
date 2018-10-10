@@ -279,6 +279,39 @@ class Game extends Component {
 }
   
 
+  renderResponses() {
+    const aqui = this;
+      const jugadores = this.props.task[0].players;
+     return  jugadores.map((jug,ind) => {
+       return (
+      <div>
+      <Row>
+        <Col sm='12' >Player: {jug}</Col>
+        <Col sm='12' >{aqui.props.task[0].blackcard}</Col>
+      </Row>
+      <Row>
+      <Col sm='10'>{aqui.renderSpecificPlayer(ind,aqui)}</Col>
+      <Col sm='2'>
+        <Button>Vote for me!</Button>
+      </Col>
+      </Row>
+      </div>
+      )})
+     }
+
+  renderSpecificPlayer (ind,aqui) {
+    if(ind===0) {
+      return (<ListGroupItem key={ind}>{aqui.props.task[0].player_1.input_text[0]} </ListGroupItem>);
+    } else if (ind===1) {
+      return (<ListGroupItem key={ind}>{aqui.props.task[0].player_2.input_text[0]} </ListGroupItem>);
+    } else if (ind===2) {
+      return (<ListGroupItem key={ind}>{aqui.props.task[0].player_3.input_text[0]} </ListGroupItem>);
+    } else if (ind===3) {
+      return (<ListGroupItem key={ind}>{aqui.props.task[0].player_4.input_text[0]} </ListGroupItem>);
+    }
+
+  }
+
   renderWaitForOthers(){
       return(<h3>Wait for other ppl to finish!  </h3>)
   }
@@ -314,8 +347,12 @@ class Game extends Component {
         {
           return aqui.renderAnswerBlocks(aqui.props.task[0].blackcard)
         }
+
+        else if(this.props.task[0].player_1.input_text[0]!== "%%" &&this.props.task[0].player_2.input_text[0]!=="%%" &&this.props.task[0].player_3.input_text[0]!=="%%" &&this.props.task[0].player_4.input_text[0]!=="%%" ) {
+          return aqui.renderResponses();
+        }
         else{
-          return aqui.renderWaitForOthers()
+          return aqui.renderWaitForOthers();
         }
       }
       
@@ -421,7 +458,7 @@ class Game extends Component {
 
   renderPlayers() {
     console.log('RenderPlayers: ', this.state.task)
-    const {players} = this.state.task
+    const {players} = this.props.task[0]
 
     if(typeof(players)==='undefined')
     { 
@@ -490,7 +527,7 @@ renderWelcome(){
         <div className="panel panel-default cronometer center-block">
           <div className="panel-body">
           {console.log('This props game_on: ', this.props.task[0].game_on)}
-            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA FIGHT
+          <h2>Add your silly input</h2>
             {this.props.task[0].game_on?this.renderGameBoard():''}
           </div>
         </div>
