@@ -71,6 +71,10 @@ Meteor.methods({
         owner: this.userId,
         username: Meteor.users.findOne(this.userId).username,
         game_on: false,
+        player_1:{},
+        player_2:{},
+        player_3:{},
+        player_4:{},
         time:moment.duration( 3 , 'minutes' ),
   
       });  
@@ -132,7 +136,29 @@ Meteor.methods({
        }
     }
   },
+  'tasks.updatePlayerText'(taskId,player,input) {
+    const task = Tasks.findOne(taskId);
+    console.log('entra a updatePlayerText:',task)
+    console.log('entra a updatePlayerText:',player)
+    player.input_text = input
+    player.ready = true
+    console.log('newplayer; ',player)
+    if(player.pos===1){
+      Tasks.update(task._id, { $set: { player_1: player } });
+    }
+    else if (player.pos===2){
+      Tasks.update(task._id, { $set: { player_2: player} });
 
+    }
+    else if (player.pos===3){
+      Tasks.update(task._id, { $set: { player_3: player } });
+    }
+    else if (player.pos===4){
+      Tasks.update(task._id, { $set: { player_4: player} });
+ 
+    }
+    
+  },
   'tasks.definePlayer'(taskId,playerArray) {
     const task = Tasks.findOne(taskId);
     if(playerArray.length===1){
@@ -175,7 +201,6 @@ Meteor.methods({
     console.log('updateTasksBlack: ', task)
     console.log(carta)
     Tasks.update(task._id, { $set: { blackcard: carta } });
-    
   },
 
   'tasks.setPrivate'(taskId, setToPrivate) {

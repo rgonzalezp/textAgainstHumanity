@@ -178,7 +178,7 @@ class HomePage extends Component {
 
           task={task}
           historia={this.props.history}
-          current_userr={currentUserId}
+          current_userr={this.props.currentUser}
           showPrivateButton={showPrivateButton}
 
         />

@@ -16,10 +16,11 @@ class Game extends Component {
       cards:[],
       black_card:'',
       master:false,
-      turn:0
+      input_text : ['%%'],
+      player_pos:-1
     };
     this.handleChangeInput1 = this.handleChangeInput1.bind(this);
-    this.handleChangeInput2 = this.handleChangeInput1.bind(this);
+    this.handleChangeInput2 = this.handleChangeInput2.bind(this);
     this.checkGameState = this.checkGameState.bind(this);
     this.updateCardState = this.updateCardState.bind(this)
     this.updateTaskState = this.updateTaskState.bind(this);
@@ -31,11 +32,33 @@ class Game extends Component {
 
 
   handleChangeInput1(evt){
+    console.log(evt.target)
+    console.log(evt)
     console.log(`Input 1: ${evt.target.value}`);
+    const input_text = evt.target.value
+    const newArr = this.state.input_text
+    console.log(newArr)
+    if(newArr.length>=1){
+      if(newArr[0]!==input_text){
+        newArr[0]=input_text
+        console.log('newinput[0]: ', newArr[0])
+        this.setState({input_text:newArr})
+      }
+    }
   }
 
   handleChangeInput2(evt){
+    console.log(evt.target)
     console.log(`Input 2: ${evt.target.value}`);
+    const input_text = evt.target.valu
+    const newArr = this.state.input_text
+    if(newArr.length>=1){
+      if(newArr[1]!==input_text){ 
+        newArr[1]=input_text
+        console.log('newinput[1]: ', newArr[1])
+        this.setState({input_text:newArr})
+      }
+    }
   }
   
 
@@ -55,16 +78,16 @@ class Game extends Component {
       try{
       if(card_sub.split('_').length<=2){
         return (    <Container>
-          <Label className="exampleBlackCard">{card_sub}</Label>
+          <Label className="exampleBlackCard1">{card_sub}</Label>
           <Input type="textarea" name="inp1" id="input_1" placeholder="Add your answer!" onChange={this.handleChangeInput1} />
-          <Button outline color="secondary">Submit your game!</Button></Container>)
+          <Button outline color="secondary" onClick = {()=> this.submitCurrentGame()}>Submit your game!</Button></Container>)
       }
       else{
         return (    <Container>
-          <Label className="exampleBlackCard">{card_sub} </Label>
+          <Label className="exampleBlackCard2">{card_sub} </Label>
           <Input type="textarea" name="inp1" id="input_1" placeholder="Add your answer for 1st blank!" onChange={this.handleChangeInput1} />
           <Input type="textarea" name="inp2" id="input_2" placeholder="Add your answer for 2nd blank!" onChange={this.handleChangeInput2}/>
-          <Button outline color="secondary">Submit your game!</Button> </Container>)
+          <Button outline color="secondary" onClick = {()=> this.submitCurrentGame()}>Submit your game!</Button> </Container>)
       }
     }
     catch(error){
@@ -116,8 +139,55 @@ class Game extends Component {
         console.log('Update Player in game:');
         console.log(this.props)
       }
-
+  
   submitCurrentGame() { 
+     // const player = this.returnPlayer()//this.props.task[0].player;
+      let new_obj;
+      const aqui = this
+      let obj_temp = {}
+      if(aqui.props.player===aqui.props.task[0].player_1.player){
+         obj_temp=  aqui.props.task[0].player_1
+      //  return obj_temp
+      }
+    
+      else if(aqui.props.player===aqui.props.task[0].player_2.player){
+         obj_temp = aqui.props.task[0].player_2
+        //return obj_temp 
+      }
+    
+      else if(aqui.props.player===aqui.props.task[0].player_3.player){
+         obj_temp = aqui.props.task[0].player_3
+        //return obj_temp
+      }
+    
+      else if(aqui.props.player===aqui.props.task[0].player_4.player){
+         obj_temp = aqui.props.task[0].player_4
+       // return obj_temp
+      }
+      console.log('Submit current game: ',this.state)
+      console.log(obj_temp)
+      Meteor.call('tasks.updatePlayerText',this.props.task[0]._id,obj_temp,this.state.input_text)
+
+      /*
+      if (this.props.task[0].player_1.player===player)
+      {
+        console.log('Submit current game player1: ',this.state.input_text)
+         Meteor.call('tasks.updatePlayerText',this.props.task[0]._id,this.props.task[0].player_1,this.state.input_text)
+      }
+      else if (this.props.task[0].player_2.player===player){
+        console.log('Submit current game player2: ',this.state.input_text)
+        Meteor.call('tasks.updatePlayerText',this.props.task[0]._id,this.props.task[0].player_2,this.state.input_text)
+      }
+      else if (this.props.task[0].player_3.player===player){
+        console.log('Submit current game player3: ',this.state.input_text)
+        Meteor.call('tasks.updatePlayerText',this.props.task[0]._id,this.props.task[0].player_3,this.state.input_text)
+      }
+      else if (this.props.task[0].player_4.player===player){
+        console.log('Submit current game player4: ',this.state.input_text)
+        Meteor.call('tasks.updatePlayerText',this.props.task[0]._id,this.props.task[0].player_4,this.state.input_text)
+        
+      }
+      */
 
   }
 
@@ -168,9 +238,10 @@ class Game extends Component {
       let obj_temp = {}
       console.log('index: ',index)
       console.log('player: ', play)
-       obj_temp = {'ready':false, 'player':play}
+       obj_temp = {'ready':false, 'player':play,'pos':index+1, 'input_text':['%%']}
      obj_array.push(obj_temp)
     })
+
     Meteor.call('tasks.definePlayer',this.props.task[0]._id,obj_array)
 
 //console.log('obje array: ', obj_array)
@@ -183,11 +254,71 @@ class Game extends Component {
       Meteor.call('tasks.activateGame',task_id)
   }
 
+  returnPlayer(){ 
+    let aqui = this
+        //if duplicates paila
+        if(aqui.props.task[0].player===aqui.props.task[0].player_1.player){
+          const obj_temp=  aqui.props.task[0].player_1
+          return obj_temp
+        }
+      
+        else if(aqui.props.task[0].player===aqui.props.task[0].player_2.player){
+          const obj_temp = aqui.props.task[0].player_2
+          return obj_temp 
+        }
+      
+        else if(aqui.props.task[0].player===aqui.props.task[0].player_3.player){
+          const obj_temp = aqui.props.task[0].player_3
+          return obj_temp
+        }
+      
+        else if(aqui.props.task[0].player===aqui.props.task[0].player_4.player){
+          const obj_temp = aqui.props.task[0].player_4
+          return obj_temp
+        }
+}
+  
+
+  renderWaitForOthers(){
+      return(<h3>Wait for other ppl to finish!  </h3>)
+  }
   renderGameBoard(){
+    const aqui = this
+    const curr_player = aqui.props.location.state.jugador.username
     if(this.props.task[0].game_on){
       console.log('sso renderBlock?Much')
-      return this.renderAnswerBlocks(this.props.task[0].blackcard)
-    }
+      let obj_temp = {}
+      console.log(aqui.props.location)
+      console.log(curr_player)
+      if(curr_player===aqui.props.task[0].player_1.player){
+         obj_temp=  aqui.props.task[0].player_1
+      //  return obj_temp
+      }
+    
+      else if(curr_player===aqui.props.task[0].player_2.player){
+         obj_temp = aqui.props.task[0].player_2
+        //return obj_temp 
+      }
+    
+      else if(curr_player===aqui.props.task[0].player_3.player){
+         obj_temp = aqui.props.task[0].player_3
+        //return obj_temp
+      }
+    
+      else if(curr_player===aqui.props.task[0].player_4.player){
+         obj_temp = aqui.props.task[0].player_4
+       // return obj_temp
+      }
+        console.log('This actual player is: ', obj_temp)
+        if (obj_temp.ready===false)
+        {
+          return aqui.renderAnswerBlocks(aqui.props.task[0].blackcard)
+        }
+        else{
+          return aqui.renderWaitForOthers()
+        }
+      }
+      
   }
   renderMasterBoard(){
     console.log('Rendermasterboard')
@@ -324,9 +455,9 @@ static getDerivedStateFromProps(props, state){
 renderWelcome(){
   const playerName = this.props.player
   return <Container><Row><h2>Hello!!! {playerName}</h2></Row>
-  <Row> 
+  <Row>   
   {this.props.task[0].game_on?<h2>Be a prick!!</h2>:this.props.master?
-  <Button className='startbtn'onClick = {()=> this.gameBegin(this.props.task[0]._id)} outline color="success"  block>
+  <Button className='welcomeBtn'onClick = {()=> this.gameBegin(this.props.task[0]._id)} outline color="success"  block>
   Start game!
   </Button>:<h3>Please wait until game begins</h3>}</Row> </Container>
 }
@@ -399,6 +530,7 @@ export default withTracker((props) => {
 
   console.log(dueno)
   const player = props.location.state.jugador
+  console.log('player: ',player)
   const master_puppets = props.location.state.current_game[0].owner===player._id?true:false
   console.log('Master of puppets: ', master_puppets)
   Meteor.subscribe('task',props.location.state.current_game[0].owner)

@@ -43,6 +43,7 @@ export default class Task extends Component {
       const history = this.props.historia
       const user_   = this.props.current_userr
       console.log(user_!==null)
+      console.log('ussserr: ',user_)
       //did this twice: One here and another in tasks.addPlayer
       // dont want to break stuff so wont change it for now because of time
       if(user_!==null)
