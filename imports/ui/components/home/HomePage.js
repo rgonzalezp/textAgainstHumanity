@@ -297,6 +297,7 @@ class HomePage extends Component {
 export default withTracker(() => {
   Meteor.subscribe('tasks');
   Meteor.subscribe('Cards');
+  console.log('Cabezera de todos: ')
   return {
     tasks: Tasks.find({}, { sort: { createdAt: -1 } }).fetch(),
     incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),

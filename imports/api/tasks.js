@@ -70,6 +70,7 @@ Meteor.methods({
         players: players,
         owner: this.userId,
         username: Meteor.users.findOne(this.userId).username,
+        game_on: false,
         time:moment.duration( 3 , 'minutes' ),
   
       });  
@@ -132,6 +133,25 @@ Meteor.methods({
     }
   },
 
+  'tasks.definePlayer'(taskId,playerArray) {
+    const task = Tasks.findOne(taskId);
+    if(playerArray.length===1){
+      Tasks.update(task._id, { $set: { player_1: playerArray[0] } });
+    }
+    else if (playerArray.length===2){
+      Tasks.update(task._id, { $set: { player_1: playerArray[0], player_2: playerArray[1] } });
+
+    }
+    else if (playerArray.length===3){
+      Tasks.update(task._id, { $set: { player_1: playerArray[0], player_2: playerArray[1], player_3: playerArray[2] } });
+    }
+    else if (playerArray.length===4){
+      Tasks.update(task._id, { $set: { player_1: playerArray[0], player_2: playerArray[1], player_3: playerArray[2], player_4: playerArray[3] } });
+ 
+    }
+    
+  },
+
   'tasks.changeTime'(taskId, newTime) {
     const task = Tasks.findOne(taskId);
     const current_user = Meteor.users.findOne(this.userId);
@@ -140,6 +160,21 @@ Meteor.methods({
    
       console.log('task.time: ',task.time);
       Tasks.update(task._id, { $set: { time: newTime } });
+    
+  },
+  
+  'tasks.activateGame'(taskId) {
+    const task = Tasks.findOne(taskId);
+    console.log('activate Game: ', task)
+    Tasks.update(task._id, { $set: { game_on: true } });
+    
+  },
+    
+  'tasks.updateTaskBlack'(taskId, carta) {
+    const task = Tasks.findOne(taskId);
+    console.log('updateTasksBlack: ', task)
+    console.log(carta)
+    Tasks.update(task._id, { $set: { blackcard: carta } });
     
   },
 
