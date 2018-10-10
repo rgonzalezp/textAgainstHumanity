@@ -1,10 +1,23 @@
 import React, { Component } from 'react';
 import './Game.css';
 import Timer from './Timer';
-import {  Container, Row, Col,Button, Label, Input, ListGroup, ListGroupItem, Alert } from 'reactstrap';
+import {  Container, Row, Col,Button, Label, Input, ListGroup, ListGroupItem, Alert} from 'reactstrap';
 import { Tasks } from '../../../api/tasks.js';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
+import Modal from 'react-modal';
+
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
 
 class Game extends Component {
   constructor(props) {
@@ -17,7 +30,8 @@ class Game extends Component {
       black_card:'',
       master:false,
       input_text : ['%%'],
-      player_pos:-1
+      player_pos:-1,
+      modalIsOpen: false
     };
     this.handleChangeInput1 = this.handleChangeInput1.bind(this);
     this.handleChangeInput2 = this.handleChangeInput2.bind(this);
@@ -28,6 +42,22 @@ class Game extends Component {
     this.updateMaster   = this.updateMaster.bind(this)
     this.updateCurrentPlayer = this.updateCurrentPlayer.bind(this)
     this.updateBlackCard  = this.updateBlackCard.bind(this)
+    this.openModal = this.openModal.bind(this);
+    this.afterOpenModal = this.afterOpenModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+  }
+
+  openModal() {
+    this.setState({modalIsOpen: true});
+  }
+
+  afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = '#f00';
+  }
+
+  closeModal() {
+    this.setState({modalIsOpen: false});
   }
 
 
@@ -79,15 +109,15 @@ class Game extends Component {
       if(card_sub.split('_').length<=2){
         return (    <Container>
           <Label className="exampleBlackCard1">{card_sub}</Label>
-          <Input type="textarea" name="inp1" id="input_1" placeholder="Add your answer!" onChange={this.handleChangeInput1} />
-          <Button outline color="secondary" onClick = {()=> this.submitCurrentGame()}>Submit your game!</Button></Container>)
+          <Input type="textarea" name="inp1" id="input_1" placeholder="Write your answer!" onChange={this.handleChangeInput1} />
+          <Button outline color="secondary" onClick = {()=> this.submitCurrentGame()}>Submit your answer!</Button></Container>)
       }
       else{
         return (    <Container>
           <Label className="exampleBlackCard2">{card_sub} </Label>
-          <Input type="textarea" name="inp1" id="input_1" placeholder="Add your answer for 1st blank!" onChange={this.handleChangeInput1} />
-          <Input type="textarea" name="inp2" id="input_2" placeholder="Add your answer for 2nd blank!" onChange={this.handleChangeInput2}/>
-          <Button outline color="secondary" onClick = {()=> this.submitCurrentGame()}>Submit your game!</Button> </Container>)
+          <Input type="textarea" name="inp1" id="input_1" placeholder="Write your answer for 1st blank!" onChange={this.handleChangeInput1} />
+          <Input type="textarea" name="inp2" id="input_2" placeholder="Write your answer for 2nd blank!" onChange={this.handleChangeInput2}/>
+          <Button outline color="secondary" onClick = {()=> this.submitCurrentGame()}>Submit your answers!</Button> </Container>)
       }
     }
     catch(error){
@@ -166,6 +196,11 @@ class Game extends Component {
       }
       console.log('Submit current game: ',this.state)
       console.log(obj_temp)
+
+      if(this.props.task[0].players.length<4)
+      {
+        this.openModal();
+      }
       Meteor.call('tasks.updatePlayerText',this.props.task[0]._id,obj_temp,this.state.input_text)
 
       /*
@@ -323,6 +358,8 @@ class Game extends Component {
       let obj_temp = {}
       console.log(aqui.props.location)
       console.log(curr_player)
+
+
       if(curr_player===aqui.props.task[0].player_1.player){
          obj_temp=  aqui.props.task[0].player_1
       //  return obj_temp
@@ -343,17 +380,24 @@ class Game extends Component {
        // return obj_temp
       }
         console.log('This actual player is: ', obj_temp)
+      try{
         if (obj_temp.ready===false)
         {
           return aqui.renderAnswerBlocks(aqui.props.task[0].blackcard)
         }
 
-        else if(this.props.task[0].player_1.input_text[0]!== "%%" &&this.props.task[0].player_2.input_text[0]!=="%%" &&this.props.task[0].player_3.input_text[0]!=="%%" &&this.props.task[0].player_4.input_text[0]!=="%%" ) {
+        else if(this.props.task[0].player_1.input_text[0]!==undefined &&this.props.task[0].player_2.input_text[0]!==undefined &&this.props.task[0].player_3.input_text[0]!==undefined &&this.props.task[0].player_4.input_text[0]!==undefined ) {
+          if(this.props.task[0].player_1.input_text[0]!== "%%" &&this.props.task[0].player_2.input_text[0]!=="%%" &&this.props.task[0].player_3.input_text[0]!=="%%" &&this.props.task[0].player_4.input_text[0]!=="%%" ) {
           return aqui.renderResponses();
+          }
         }
         else{
           return aqui.renderWaitForOthers();
         }
+      } catch (err) {
+        () => {aqui.openModal()}
+      }
+      
       }
       
   }
@@ -439,7 +483,7 @@ class Game extends Component {
      return  jugadores.map((jug,ind) => {
        if(this.props.task[0].game_on)
        {
-       return (<Row><Col sm='12'><ListGroupItem key={ind}>{jug} </ListGroupItem></Col><Col sm='12' key={ind}>{this.renderPlayerState(ind)}</Col></Row>)
+       return (<Row><Col sm='7'><ListGroupItem key={ind}>{jug} </ListGroupItem></Col><Col sm='5' key={ind} style={{'margin-top':'0.5rem'}}>{this.renderPlayerState(ind)}</Col></Row>)
        }
        else{
         return <ListGroupItem key={ind}>{ jug}</ListGroupItem>
@@ -491,9 +535,10 @@ static getDerivedStateFromProps(props, state){
 
 renderWelcome(){
   const playerName = this.props.player
-  return <Container><Row><h2>Hello!!! {playerName}</h2></Row>
-  <Row>   
-  {this.props.task[0].game_on?<h2>Be a prick!!</h2>:this.props.master?
+  const ownerName = this.props.task[0].username
+  return <Container><Row><h2>Welcome to {ownerName}'s room, {playerName}</h2></Row>
+  <Row style={{'text-allign':'center'}}>   
+  {this.props.task[0].game_on?<h1>Be a prick!!</h1>:this.props.master?
   <Button className='welcomeBtn'onClick = {()=> this.gameBegin(this.props.task[0]._id)} outline color="success"  block>
   Start game!
   </Button>:<h3>Please wait until game begins</h3>}</Row> </Container>
@@ -502,6 +547,24 @@ renderWelcome(){
     console.log('Master of puppets render(): ', this.props.master)
     return (
       <div>
+
+
+      <Modal
+          isOpen={this.state.modalIsOpen}
+          onAfterOpen={this.afterOpenModal}
+          onRequestClose={this.closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+
+          <h2 ref={subtitle => this.subtitle = subtitle}>Error!</h2>
+          <div>Please, start the game with 4 players and then play</div>
+          <button onClick={this.closeModal}>close</button>
+          
+          
+        </Modal>
+
+
        <Container>
         <Row>
         <Col sm = '4' >
