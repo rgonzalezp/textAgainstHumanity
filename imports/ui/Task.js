@@ -1,5 +1,6 @@
 
 
+// Este componente es del tutorial así que sobra
 import React, { Component } from 'react';
 import { Tasks } from '../api/tasks.js';
 import { Meteor } from 'meteor/meteor';
