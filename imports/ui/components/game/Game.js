@@ -33,6 +33,7 @@ class Game extends Component {
       input_text2:['%%'],
       player_pos:-1,
       modalIsOpen: false,
+      modalWinner:false,
       voted:false,
     };
     this.handleChangeInput1 = this.handleChangeInput1.bind(this);
@@ -60,6 +61,19 @@ class Game extends Component {
 
   closeModal() {
     this.setState({modalIsOpen: false});
+  }
+
+  openModalWinner() {
+    this.setState({modalWinner: true});
+  }
+
+  afterOpenModalWinner() {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = '#f00';
+  }
+
+  closeModalWinner() {
+    this.setState({modalWinner: false});
   }
 
 
@@ -371,18 +385,38 @@ class Game extends Component {
 
   resetRound(task_id) {
     const obj_array = [];
+    let winnerIndx =0;
+    let winnerValue =0;
+    if(Number(this.props.task[0].player_1votes)>winnerValue) {
+      winnerIndx=0;
+      winnerValue=Number(this.props.task[0].player_1votes);
+    if (Number(this.props.task[0].player_2votes)>winnerValue) {
+      winnerIndx=1;
+      winnerValue=Number(this.props.task[0].player_2votes);
+    }
+    if (Number(this.props.task[0].player_3votes)>winnerValue) {
+      winnerIndx=2;
+      winnerValue=Number(this.props.task[0].player_3votes);
+    }
+    if (Number(this.props.task[0].player_4votes)>winnerValue) {
+      winnerIndx=3;
+      winnerValue=Number(this.props.task[0].player_4votes);
+    }
+
+
 
     this.props.task[0].players.map((play,index)=>{
       let obj_temp = {}
       console.log('index: ',index)
       console.log('player: ', play)
-       obj_temp = {'ready':false, 'player':play,'pos':index+1, 'input_text':['%%']}
+       obj_temp = {'ready':false, 'player':play,'pos':index+1, 'input_text':['%%'],'input_text':['%%']}
      obj_array.push(obj_temp)
     })
 
-    Meteor.call('tasks.resetRound',task_id,obj_array);
+    Meteor.call('tasks.resetRound',task_id,obj_array,winnerIndx);
 
   }
+}
 
   renderResponses() {
     const aqui = this;
@@ -679,6 +713,13 @@ renderWelcome(){
   Start game!
   </Button>:<h3>Please wait until game begins</h3>}</Row> </Container>
 }
+
+activateModalWinner() {
+
+  if (this.props.task[0].currentWinner>=0) { 
+          this.openModalWinner();
+        }
+}
   render() {
     console.log('Master of puppets render(): ', this.props.master)
     return (
@@ -699,6 +740,21 @@ renderWelcome(){
           
           
         </Modal>
+
+        <Modal
+          isOpen={this.state.modalWinner}
+          onAfterOpen={this.afterOpenModalWinner}
+          onRequestClose={this.closeModalWinner}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+
+          <h2 ref={subtitle => this.subtitle = subtitle}>Error!</h2>
+          <div>The last round winner is: {this.props.task[0].currentWinner} </div>
+          <button onClick={this.closeModal}>close</button>
+          
+        </Modal>
+
 
 
        <Container>
@@ -729,6 +785,8 @@ renderWelcome(){
           <h2>Add your silly input</h2>
             {this.props.task[0].game_on?this.renderGameBoard():''}
           </div>
+          {this.props.task[0].currentWinner?<h2>Last round winner:{this.props.task[0].currentWinner.player}</h2>:<div></div>}
+
         </div>
         </Col>
       

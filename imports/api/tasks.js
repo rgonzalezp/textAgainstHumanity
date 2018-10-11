@@ -80,6 +80,7 @@ Meteor.methods({
         player_3votes:0,
         player_4votes:0,
         cards:cartas,
+        currentWinner:{},
         time:moment.duration( 3 , 'minutes' ),
   
       });  
@@ -209,7 +210,7 @@ Meteor.methods({
     }
     
   },
-  'tasks.resetRound'(taskId,playerArray) {
+  'tasks.resetRound'(taskId,playerArray,index) {
     const task = Tasks.findOne(taskId);
     Tasks.update(task._id, { $set: {
       player_1: playerArray[0], player_2: playerArray[1], player_3: playerArray[2], player_4: playerArray[3],
@@ -217,6 +218,7 @@ Meteor.methods({
       player_2votes:0,
       player_3votes:0,
       player_4votes:0,
+      currentWinner:playerArray[index]
     } });
  
 
