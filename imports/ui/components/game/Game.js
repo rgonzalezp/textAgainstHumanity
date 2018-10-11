@@ -78,30 +78,27 @@ class Game extends Component {
 
 
   handleChangeInput1(evt){
-    console.log(evt.target)
-    console.log(evt)
-    console.log(`Input 1: ${evt.target.value}`);
+   
     const input_text = evt.target.value
     const newArr = this.state.input_text
-    console.log(newArr)
+
     if(newArr.length>=1){
       if(newArr[0]!==input_text){
         newArr[0]=input_text
-        console.log('newinput[0]: ', newArr[0])
+    
         this.setState({input_text:newArr})
       }
     }
   }
 
   handleChangeInput2(evt){
-    console.log(evt.target)
-    console.log(`Input 2: ${evt.target.value}`);
+   
     const input_text2 = evt.target.value
     const newArr = this.state.input_text2
     if(newArr.length>=1){
       if(newArr[0]!==input_text2){ 
         newArr[0]=input_text2
-        console.log('newinput[1]: ', newArr[0])
+
         this.setState({input_text2:newArr})
       }
     }
@@ -389,33 +386,35 @@ class Game extends Component {
     let winnerValue =0;
     if(Number(this.props.task[0].player_1votes)>winnerValue) {
       winnerIndx=0;
+        console.log("resetting.....");
       winnerValue=Number(this.props.task[0].player_1votes);
     if (Number(this.props.task[0].player_2votes)>winnerValue) {
       winnerIndx=1;
+        console.log("resetting.....");
       winnerValue=Number(this.props.task[0].player_2votes);
     }
     if (Number(this.props.task[0].player_3votes)>winnerValue) {
       winnerIndx=2;
+        console.log("resetting.....");
       winnerValue=Number(this.props.task[0].player_3votes);
     }
     if (Number(this.props.task[0].player_4votes)>winnerValue) {
       winnerIndx=3;
+        console.log("resetting.....");
       winnerValue=Number(this.props.task[0].player_4votes);
     }
+    console.log("resetting.....");  
 
-
-
-    this.props.task[0].players.map((play,index)=>{
+  }
+  this.props.task[0].players.map((play,index)=>{
       let obj_temp = {}
       console.log('index: ',index)
       console.log('player: ', play)
        obj_temp = {'ready':false, 'player':play,'pos':index+1, 'input_text':['%%'],'input_text':['%%']}
      obj_array.push(obj_temp)
     })
-
+      console.log("this is winner index", winnerIndx);
     Meteor.call('tasks.resetRound',task_id,obj_array,winnerIndx);
-
-  }
 }
 
   renderResponses() {
@@ -442,7 +441,6 @@ class Game extends Component {
 
     const card_sub = this.props.task[0].blackcard
 
-    console.log(card_sub)
       
       try {
       if(card_sub.split('_').length<=2) {
@@ -507,10 +505,9 @@ class Game extends Component {
     const aqui = this
     const curr_player = aqui.props.location.state.jugador.username
     if(this.props.task[0].game_on){
-      console.log('sso renderBlock?Much')
+     
       let obj_temp = {}
-      console.log(aqui.props.location)
-      console.log(curr_player)
+  
 
 
       if(curr_player===aqui.props.task[0].player_1.player){
@@ -555,11 +552,7 @@ class Game extends Component {
       
   }
   renderMasterBoard(){
-    console.log('Rendermasterboard')
-    console.log(this.props.master)
-    console.log('Task diff')
-    console.log(this.state.task)
-    console.log(this.props.task[0])
+
     return (<Container>
       {this.changeTask()}
       {this.renderPlayers()}
@@ -567,9 +560,9 @@ class Game extends Component {
   }
 
   renderSlaveBoard(){
-    console.log('comomomun')
+
     let empty = Object.getOwnPropertyNames(this.state.task).length === 0
-    console.log(empty)
+
 
       if(typeof(this.state.task)==='undefined'|| empty){
           console.log('task is undefined')
@@ -637,7 +630,7 @@ class Game extends Component {
     
   }
   renderJugador(jugadores) {
-    console.log('render Jugador :',jugadores)
+
      return  jugadores.map((jug,ind) => {
        if(this.props.task[0].game_on)
        {
@@ -652,10 +645,7 @@ class Game extends Component {
 
   checkForWinner() {
     const numVotes = Number(this.props.task[0].player_1votes)+ Number(this.props.task[0].player_2votes)+ Number(this.props.task[0].player_3votes)+ Number(this.props.task[0].player_4votes)+1;
-    console.log("votos primer",this.props.task[0].player_1votes);
-    console.log("votos primer numer",Number(this.props.task[0].player_1votes));
-    console.log("votos parse", parseInt(numVotes,10));
-    console.log("votos parse2", parseInt(this.props.task[0].player_1votes,10));
+   
     console.log("numero de votos", numVotes);
 
     const aqui = this;
@@ -714,14 +704,9 @@ renderWelcome(){
   </Button>:<h3>Please wait until game begins</h3>}</Row> </Container>
 }
 
-activateModalWinner() {
 
-  if (this.props.task[0].currentWinner>=0) { 
-          this.openModalWinner();
-        }
-}
   render() {
-    console.log('Master of puppets render(): ', this.props.master)
+
     return (
       <div>
 
@@ -785,7 +770,7 @@ activateModalWinner() {
           <h2>Add your silly input</h2>
             {this.props.task[0].game_on?this.renderGameBoard():''}
           </div>
-          {this.props.task[0].currentWinner?<h2>Last round winner:{this.props.task[0].currentWinner.player}</h2>:<div></div>}
+          {typeof this.props.task[0].currentWinner.player !== "undefined"?<h2>Last round winner:{this.props.task[0].currentWinner.player}</h2>:<div></div>}
 
         </div>
         </Col>
@@ -798,7 +783,7 @@ activateModalWinner() {
 }
 
 export default withTracker((props) => {
-  console.log('Wahtadapmotherfucker')
+
 
   let dueno
   //Estos ifs son para verificar formato nada mas de como entra el
@@ -806,7 +791,7 @@ export default withTracker((props) => {
   //console.log((props))
   if(typeof(props.location.state.current_game)==='object')
   {
-    console.log('entro a primer if')
+
     if(typeof(props.location.state.current_game.owner)==='undefined')
     {
       dueno =  props.location.state.current_game[0].owner
