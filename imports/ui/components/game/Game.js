@@ -388,6 +388,7 @@ class Game extends Component {
       winnerIndx=0;
         console.log("resetting.....");
       winnerValue=Number(this.props.task[0].player_1votes);
+    }
     if (Number(this.props.task[0].player_2votes)>winnerValue) {
       winnerIndx=1;
         console.log("resetting.....");
@@ -403,9 +404,8 @@ class Game extends Component {
         console.log("resetting.....");
       winnerValue=Number(this.props.task[0].player_4votes);
     }
-    console.log("resetting.....");  
 
-  }
+  
   this.props.task[0].players.map((play,index)=>{
       let obj_temp = {}
       console.log('index: ',index)
