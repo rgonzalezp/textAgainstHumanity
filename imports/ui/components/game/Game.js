@@ -30,6 +30,7 @@ class Game extends Component {
       black_card:'',
       master:false,
       input_text : ['%%'],
+      input_text2:['%%'],
       player_pos:-1,
       modalIsOpen: false,
       voted:false,
@@ -81,13 +82,13 @@ class Game extends Component {
   handleChangeInput2(evt){
     console.log(evt.target)
     console.log(`Input 2: ${evt.target.value}`);
-    const input_text = evt.target.valu
-    const newArr = this.state.input_text
+    const input_text2 = evt.target.value
+    const newArr = this.state.input_text2
     if(newArr.length>=1){
-      if(newArr[1]!==input_text){ 
-        newArr[1]=input_text
-        console.log('newinput[1]: ', newArr[1])
-        this.setState({input_text:newArr})
+      if(newArr[0]!==input_text2){ 
+        newArr[0]=input_text2
+        console.log('newinput[1]: ', newArr[0])
+        this.setState({input_text2:newArr})
       }
     }
   }
@@ -95,7 +96,12 @@ class Game extends Component {
 
 
   updateCardState = () => {
-    this.setState({cards:this.props.location.state.cartas_game})
+    if(!this.props.task[0].game_on) {
+      this.setState({cards:this.props.location.state.cartas_game})
+    } else {
+      console.log("entro en updateDeck");
+      this.setState({cards:this.props.task[0].cards})
+    }
   }
   updateTaskState = ()=>{
     //  console.log('updatetask: ',this.props.location.state.current_game)
@@ -172,6 +178,12 @@ class Game extends Component {
       }
   
   submitCurrentGame() { 
+
+    this.changeVote();
+
+    if(this.state.cards===undefined) {
+      this.updateCardState();
+    }
      // const player = this.returnPlayer()//this.props.task[0].player;
       let new_obj;
       const aqui = this
@@ -202,7 +214,7 @@ class Game extends Component {
       {
         this.openModal();
       }
-      Meteor.call('tasks.updatePlayerText',this.props.task[0]._id,obj_temp,this.state.input_text)
+      Meteor.call('tasks.updatePlayerText',this.props.task[0]._id,obj_temp,this.state.input_text,this.state.input_text2)
 
       /*
       if (this.props.task[0].player_1.player===player)
@@ -284,6 +296,7 @@ class Game extends Component {
      
   }
   gameBegin(task_id){
+    {this.updateCardState()}
     {this.getBlackCardGame()}
     {this.definePlayers()}
       Meteor.call('tasks.activateGame',task_id)
@@ -312,6 +325,7 @@ class Game extends Component {
           return obj_temp
         }
 }
+
   submitVote(e) { 
      // const player = this.returnPlayer()//this.props.task[0].player;
 
@@ -391,7 +405,14 @@ class Game extends Component {
      }
 
   renderSpecificPlayer (ind,aqui) {
-    if(ind===0) {
+
+    const card_sub = this.props.task[0].blackcard
+
+    console.log(card_sub)
+      
+      try {
+      if(card_sub.split('_').length<=2) {
+          if(ind===0) {
       return (<ListGroupItem key={ind}>{aqui.props.task[0].player_1.input_text[0]} </ListGroupItem>);
     } else if (ind===1) {
       return (<ListGroupItem key={ind}>{aqui.props.task[0].player_2.input_text[0]} </ListGroupItem>);
@@ -400,6 +421,30 @@ class Game extends Component {
     } else if (ind===3) {
       return (<ListGroupItem key={ind}>{aqui.props.task[0].player_4.input_text[0]} </ListGroupItem>);
     }
+      }
+      else{
+        if(ind===0) {
+      return (<div>
+        <ListGroupItem key={ind}>{aqui.props.task[0].player_1.input_text[0]} </ListGroupItem>
+        <ListGroupItem key={ind}>{aqui.props.task[0].player_1.input_text2[0]} </ListGroupItem>
+        </div>);
+    } else if (ind===1) {
+      return (<div>
+        <ListGroupItem key={ind}>{aqui.props.task[0].player_2.input_text[0]} </ListGroupItem>
+        <ListGroupItem key={ind}>{aqui.props.task[0].player_2.input_text2[0]} </ListGroupItem></div>);
+    } else if (ind===2) {
+      return (<div><ListGroupItem key={ind}>{aqui.props.task[0].player_3.input_text[0]} </ListGroupItem>
+      <ListGroupItem key={ind}>{aqui.props.task[0].player_3.input_text2[0]} </ListGroupItem></div>);
+    } else if (ind===3) {
+      return (<div><ListGroupItem key={ind}>{aqui.props.task[0].player_4.input_text[0]} </ListGroupItem>
+      <ListGroupItem key={ind}>{aqui.props.task[0].player_4.input_text2[0]} </ListGroupItem></div>);
+    }
+      }
+    }
+    catch(error){
+        console.log('Trying to split when there is nothing to split')
+    }
+    
 
   }
 
@@ -417,6 +462,12 @@ class Game extends Component {
 
   renderWaitForOthers(){
       return(<h3>Wait for other ppl to finish!  </h3>)
+  }
+
+  changeVote() {
+    this.setState({
+      voted:false
+     });
   }
   renderGameBoard(){
     const aqui = this
@@ -451,7 +502,6 @@ class Game extends Component {
       try{
         if (obj_temp.ready===false)
         {
-          this.setState({voted:false});
           return aqui.renderAnswerBlocks(aqui.props.task[0].blackcard)
         }
 
@@ -577,6 +627,7 @@ class Game extends Component {
     const aqui = this;
       if(+numVotes===4)
       {
+
         this.getBlackCardGame();
         console.log("JAJAJAJAJAJAJJA");
         this.resetRound(this.props.task[0]._id);

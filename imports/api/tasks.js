@@ -44,7 +44,7 @@ if (Meteor.isServer) {
 
 Meteor.methods({
 
-  'tasks.insert'(text,players) {
+  'tasks.insert'(text,players,cartas) {
 
     check(text, String);
     console.log('players: ',players)
@@ -79,6 +79,7 @@ Meteor.methods({
         player_2votes:0,
         player_3votes:0,
         player_4votes:0,
+        cards:cartas,
         time:moment.duration( 3 , 'minutes' ),
   
       });  
@@ -140,11 +141,12 @@ Meteor.methods({
        }
     }
   },
-  'tasks.updatePlayerText'(taskId,player,input) {
+  'tasks.updatePlayerText'(taskId,player,input,input2) {
     const task = Tasks.findOne(taskId);
     console.log('entra a updatePlayerText:',task)
     console.log('entra a updatePlayerText:',player)
     player.input_text = input
+    player.input_text2 = input2
     player.ready = true
     console.log('newplayer; ',player)
     if(player.pos===1){

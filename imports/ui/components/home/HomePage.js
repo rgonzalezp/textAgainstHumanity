@@ -125,7 +125,7 @@ class HomePage extends Component {
         promise.then(function(ret){
           console.log('Current user const1: ', current_user)
           aqui.setState({game_ready:true});
-        Meteor.call('tasks.insert',nombre, [current_user.username]);
+        Meteor.call('tasks.insert',nombre, [current_user.username],aqui.state.cartas);
         return true;
         }).then(function(ret){
           console.log('Current user const2: ', current_user)
