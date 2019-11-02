@@ -44,5 +44,7 @@ http://40.87.12.97:3000/
 - Add your own personal made decks too!
 
 ## Copyright and license
+Released under: [![DOI](https://zenodo.org/badge/150640643.svg)](https://zenodo.org/badge/latestdoi/150640643)
+
 Code Copyright 2018 Ricardo Enrique Gonzalez Peñuela, Esteban Galvis. Code released under the MIT license.
 
